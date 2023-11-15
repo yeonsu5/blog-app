@@ -1,6 +1,7 @@
 package com.kotlin.blog.repository
 
 import com.kotlin.blog.domain.Post
+import com.kotlin.blog.domain.User
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
@@ -14,19 +15,45 @@ import org.springframework.test.context.ActiveProfiles
 @ActiveProfiles("test")
 class PostRepositoryTest(
     @Autowired val postRepository: PostRepository,
+    @Autowired val userRepository: UserRepository,
 ) {
+
+//    @BeforeEach
+//    fun saveUser() {
+//        userRepository.save(User("abc@gmail.com", "password", "nickname"))
+//    }
 
     @AfterEach
     fun clean() {
         postRepository.deleteAll()
+        userRepository.deleteAll()
     }
+
+//    @Test
+//    @DisplayName("전체 글 조회 테스트(레포지토리)")
+//    fun findAllTest() {
+//        // given
+//        userRepository.save(User("abc@gmail.com", "password", "nickname"))
+//        val post1 = Post.fixture("test title 1", "test content 1")
+//        val post2 = Post.fixture("test title 2", "test content 2")
+//        postRepository.save(post1)
+//        postRepository.save(post2)
+//        // when
+//        val results = postRepository.findAll()
+//        // then
+//        assertThat(results.size).isEqualTo(2)
+//        assertThat(results[0].title).isEqualTo(post1.title)
+//        assertThat(results[1].content).isEqualTo(post2.content)
+//    }
 
     @Test
     @DisplayName("전체 글 조회 테스트(레포지토리)")
     fun findAllTest() {
         // given
-        val post1 = Post("test title 1", "test content 1")
-        val post2 = Post("test title 2", "test content 2")
+        val user = User("abc@gmail.com", "password", "nickname")
+        userRepository.save(user)
+        val post1 = Post("test title 1", "test content 1", user)
+        val post2 = Post("test title 2", "test content 2", user)
         postRepository.save(post1)
         postRepository.save(post2)
         // when
@@ -41,7 +68,8 @@ class PostRepositoryTest(
     @DisplayName("글 1개 조회 테스트(레포지토리)")
     fun findByIdTest() {
         // given
-        val post = Post("test title", "test content")
+        val user = userRepository.save(User("abc@gmail.com", "password", "nickname"))
+        val post = Post("test title", "test content", user)
         postRepository.save(post)
         // when
         val result = postRepository.findByIdOrNull(post.id)
@@ -55,7 +83,8 @@ class PostRepositoryTest(
     @DisplayName("글 저장 테스트(레포지토리)")
     fun saveTest() {
         // given
-        val post = Post("test title", "test content")
+        val user = userRepository.save(User("abc@gmail.com", "password", "nickname"))
+        val post = Post("test title", "test content", user)
         // when
         val result = postRepository.save(post)
         // then
@@ -67,7 +96,8 @@ class PostRepositoryTest(
     @DisplayName("글 수정 테스트(레포지토리)")
     fun updateTest() {
         // given
-        val post = Post("initial title", "initial content")
+        val user = userRepository.save(User("abc@gmail.com", "password", "nickname"))
+        val post = Post("initial title", "initial content", user)
         val savedPost = postRepository.save(post)
         val updatedTitle = "updated title"
         val updatedContent = "updated content"
@@ -88,7 +118,8 @@ class PostRepositoryTest(
     @DisplayName("글 삭제 테스트(레포지토리)")
     fun deleteTest() {
         // given
-        val post = Post("to be deleted post title", "to be deleted post content")
+        val user = userRepository.save(User("abc@gmail.com", "password", "nickname"))
+        val post = Post("to be deleted post title", "to be deleted post content", user)
         val savedPost = postRepository.save(post)
         // when
         postRepository.deleteById(savedPost.id!!)
