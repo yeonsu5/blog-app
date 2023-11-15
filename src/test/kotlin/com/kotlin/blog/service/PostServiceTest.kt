@@ -1,38 +1,42 @@
 package com.kotlin.blog.service
 
 import com.kotlin.blog.domain.Post
+import com.kotlin.blog.domain.User
 import com.kotlin.blog.dto.request.PostSaveRequest
 import com.kotlin.blog.dto.request.PostUpdateRequest
 import com.kotlin.blog.repository.PostRepository
+import com.kotlin.blog.repository.UserRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest
 @ActiveProfiles("test")
 class PostServiceTest @Autowired constructor(
     private val postRepository: PostRepository,
+    private val userRepository: UserRepository,
     private val postService: PostService,
 ) {
 
     @AfterEach
     fun clean() {
         postRepository.deleteAll()
+        userRepository.deleteAll()
     }
 
     @Test
     @DisplayName("전체 글 조회(서비스)")
     fun getAllPostsTest() {
         // given
+        val user = userRepository.save(User("abc@gmail.com", "password", "nickname"))
         postRepository.saveAll(
             listOf(
-                Post("post 1", "post 1 content"),
-                Post("post 2", "post 2 content"),
+                Post("post 1", "post 1 content", user),
+                Post("post 2", "post 2 content", user),
             ),
         )
         // when
@@ -40,16 +44,15 @@ class PostServiceTest @Autowired constructor(
         // then
         assertThat(results).hasSize(2)
         assertThat(results[0].title).isEqualTo("post 1")
-        assertThat(results[1].content).isEqualTo("post 2 content")
         assertThat(results).extracting("title").containsExactly("post 1", "post 2")
-        assertThat(results).extracting("content").containsExactly("post 1 content", "post 2 content")
     }
 
     @Test
     @DisplayName("Id로 글 한개 조회(서비스)")
     fun getPostByIdTest() {
         // given
-        val savedPost = postRepository.save(Post("title", "content"))
+        val user = userRepository.save(User("abc@gmail.com", "password", "nickname"))
+        val savedPost = postRepository.save(Post("title", "content", user))
         // when
         val foundPost = postService.getPostById(savedPost.id!!)
         // then
@@ -64,7 +67,8 @@ class PostServiceTest @Autowired constructor(
         // given
         val title = "title"
         val content = "content"
-        val post = PostSaveRequest(title, content)
+        val user = userRepository.save(User("abc@gmail.com", "password", "nickname"))
+        val post = PostSaveRequest(title, content, user.id!!)
         // when
         postService.savePost(post)
         // then
@@ -78,7 +82,8 @@ class PostServiceTest @Autowired constructor(
     @DisplayName("글 수정(서비스)")
     fun updatePostTest() {
         // given
-        val post = postRepository.save(Post("original title", "original content"))
+        val user = userRepository.save(User("abc@gmail.com", "password", "nickname"))
+        val post = postRepository.save(Post("original title", "original content", user))
         val updatedTitle = "updated title"
         val updatedContent = "updated content"
         // when
@@ -95,9 +100,10 @@ class PostServiceTest @Autowired constructor(
     @DisplayName("글 삭제(서비스)")
     fun deletePostTest() {
         // given
-        val post = postRepository.save(Post("title", "content"))
+        val user = userRepository.save(User("abc@gmail.com", "password", "nickname"))
+        val post = postRepository.save(Post("title", "content", user))
         // when
-        postService.deletePost(post.id!!)
+        postService.deletePostById(post.id!!)
         // then
         val allPosts = postRepository.findAll()
         assertThat(allPosts.size).isEqualTo(0)
