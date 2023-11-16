@@ -42,8 +42,6 @@ dependencies {
     // h2 (test 코드용)
     runtimeOnly("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    // aop
-    implementation("org.springframework.boot:spring-boot-starter-aop:3.1.5")
 }
 
 tasks.withType<KotlinCompile> {

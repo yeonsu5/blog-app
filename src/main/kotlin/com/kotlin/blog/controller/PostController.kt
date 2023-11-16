@@ -5,6 +5,7 @@ import com.kotlin.blog.dto.request.PostUpdateRequest
 import com.kotlin.blog.dto.response.PostListResponse
 import com.kotlin.blog.dto.response.PostResponse
 import com.kotlin.blog.service.PostService
+import com.kotlin.blog.util.ExistenceCheck
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -14,7 +15,6 @@ class PostController(
     private val postService: PostService,
 ) {
 
-    // validation 적용 - 컨트롤러
     @GetMapping("/posts")
     fun findAll(): ResponseEntity<List<PostListResponse>> {
         val allPosts = postService.getAllPosts()
@@ -23,7 +23,7 @@ class PostController(
             .body(allPosts)
     }
 
-    // id의 존재 여부에 대해서 validation
+    @ExistenceCheck
     @GetMapping("/posts/{id}")
     fun findPostById(@PathVariable id: Long): ResponseEntity<PostResponse> {
         val post = postService.getPostById(id)
@@ -40,6 +40,7 @@ class PostController(
             .body(savedPost)
     }
 
+    @ExistenceCheck
     @DeleteMapping("/posts/{id}")
     fun deletePost(@PathVariable id: Long): ResponseEntity<String> {
         postService.deletePostById(id)
@@ -48,6 +49,7 @@ class PostController(
             .body("게시글 삭제 완료")
     }
 
+    @ExistenceCheck
     @PutMapping("/posts/{id}")
     fun updatePost(@PathVariable id: Long, @RequestBody request: PostUpdateRequest): ResponseEntity<PostResponse> {
         val updatedPost = postService.updatePost(id, request)
