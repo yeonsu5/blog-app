@@ -16,39 +16,38 @@ class PostServiceImpl(
     private val postRepository: PostRepository,
     private val userRepository: UserRepository,
 ) : PostService {
-    // 전체 조회
-    @Transactional(readOnly = true)
+
     override fun getAllPosts(): List<PostListResponse> {
-        return postRepository.findAll().map { post -> PostListResponse.of(post) }
+        return postRepository.findAll().map { post -> PostListResponse.toDto(post) }
     }
 
-    // 1개 조회
-    @Transactional(readOnly = true)
-    override fun getPostById(id: Long): PostResponse {
+    override fun getPostById(id: Long): PostResponse { // get 요청일 때는 @Transactional 적용하지 않기
         val post = postRepository.findByIdOrNull(id)
             ?: throw IllegalArgumentException("post id $id not found") // 예외처리 AOP 적용하기 - Bean 설정
-        return PostResponse.of(post)
+
+        return PostResponse.toDto(post)
     }
 
-    // 작성
     @Transactional
     override fun savePost(request: PostSaveRequest): PostResponse {
         val user = userRepository.findByIdOrNull(request.userId)
             ?: throw IllegalArgumentException("user id ${request.userId} not found")
-        Post(request.title, request.content, user)
+
         val savedPost = postRepository.save(Post(request.title, request.content, user))
-        return PostResponse.of(savedPost)
+
+        return PostResponse.toDto(savedPost)
     }
 
-    // 수정
     @Transactional
     override fun updatePost(id: Long, request: PostUpdateRequest): PostResponse {
-        val post = postRepository.findByIdOrNull(id) ?: throw IllegalArgumentException("post id $id not found")
+        val post = postRepository.findByIdOrNull(id)
+            ?: throw IllegalArgumentException("post id $id not found")
+
         post.update(request.title, request.content, request.updatedAt)
-        return PostResponse.of(post)
+
+        return PostResponse.toDto(post)
     }
 
-    // 삭제
     @Transactional
     override fun deletePostById(id: Long) {
         postRepository.deleteById(id)

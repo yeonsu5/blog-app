@@ -6,6 +6,12 @@ plugins {
     kotlin("jvm") version "1.9.20"
     kotlin("plugin.spring") version "1.9.20"
     kotlin("plugin.jpa") version "1.9.20"
+    kotlin("plugin.allopen") version "1.9.20"
+}
+allOpen {
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.Embeddable")
+    annotation("jakarta.persistence.MappedSuperclass")
 }
 
 group = "com.kotlin"
@@ -36,6 +42,8 @@ dependencies {
     // h2 (test 코드용)
     runtimeOnly("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    // aop
+    implementation("org.springframework.boot:spring-boot-starter-aop:3.1.5")
 }
 
 tasks.withType<KotlinCompile> {

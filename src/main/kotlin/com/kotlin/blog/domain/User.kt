@@ -18,5 +18,5 @@ class User(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    val id: Long = 0, // Id에 null 쓰지 않기
 )
