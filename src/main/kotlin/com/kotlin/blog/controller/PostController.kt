@@ -7,8 +7,17 @@ import com.kotlin.blog.dto.response.PostResponse
 import com.kotlin.blog.service.PostService
 import com.kotlin.blog.util.ApiResponse
 import com.kotlin.blog.util.ExistenceCheck
+import com.kotlin.blog.util.response
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.*
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api")
@@ -17,40 +26,41 @@ class PostController(
 ) {
 
     @GetMapping("/posts")
-    fun findAll(): ApiResponse<List<PostListResponse>> {
+    fun findAll(): ResponseEntity<ApiResponse<List<PostListResponse>>> {
         val allPosts = postService.getAllPosts()
 
-        return ApiResponse.respond(HttpStatus.OK, "게시글 목록 조회", allPosts)
+        return response(HttpStatus.OK, "게시글 목록 조회", allPosts)
     }
 
     @ExistenceCheck
     @GetMapping("/posts/{id}")
-    fun findPostById(@PathVariable id: Long): ApiResponse<PostResponse> {
+    fun findPostById(@PathVariable id: Long): ResponseEntity<ApiResponse<PostResponse>> {
         val post = postService.getPostById(id)
 
-        return ApiResponse.respond(HttpStatus.OK, "게시글 상세 조회", post)
+        return response(HttpStatus.OK, "게시글 상세 조회", post)
     }
 
     @PostMapping("/posts")
-    fun createPost(@RequestBody request: PostSaveRequest): ApiResponse<PostResponse> {
+    fun createPost(@RequestBody request: PostSaveRequest): ResponseEntity<ApiResponse<PostResponse>> {
         val savedPost = postService.savePost(request)
 
-        return ApiResponse.respond(HttpStatus.CREATED, "게시글 작성", savedPost)
+        return response(HttpStatus.CREATED, "게시글 작성", savedPost)
     }
 
     @ExistenceCheck
     @DeleteMapping("/posts/{id}")
-    fun deletePost(@PathVariable id: Long): ApiResponse<String> {
+    fun deletePost(@PathVariable id: Long): ResponseEntity<ApiResponse<String>> {
         postService.deletePostById(id)
 
-        return ApiResponse.respond(HttpStatus.OK, "게시글 삭제")
+        return response(HttpStatus.OK, "게시글 삭제")
     }
 
     @ExistenceCheck
     @PutMapping("/posts/{id}")
-    fun updatePost(@PathVariable id: Long, @RequestBody request: PostUpdateRequest): ApiResponse<PostResponse> {
+    fun updatePost(@PathVariable id: Long, @RequestBody request: PostUpdateRequest):
+        ResponseEntity<ApiResponse<PostResponse>> {
         val updatedPost = postService.updatePost(id, request)
 
-        return ApiResponse.respond(HttpStatus.OK, "게시글 수정", updatedPost)
+        return response(HttpStatus.OK, "게시글 수정", updatedPost)
     }
 }
