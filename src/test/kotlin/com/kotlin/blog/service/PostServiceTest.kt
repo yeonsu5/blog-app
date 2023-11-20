@@ -28,6 +28,15 @@ class PostServiceTest @Autowired constructor(
         userRepository.deleteAll()
     }
 
+//    @Test
+//    fun InputDummyDataForPaging() {
+//        for (i in 1..500) {
+//            var title = "테스트용 데이터 제목입니다:[$i]"
+//            var content = "테스트용 데이터 내용입니다: [$i]"
+//            postService.savePost(PostSaveRequest(title, content, 2))
+//        }
+//    }
+
     @Test
     @DisplayName("전체 글 조회(서비스)")
     fun getAllPostsTest() {
@@ -40,11 +49,11 @@ class PostServiceTest @Autowired constructor(
             ),
         )
         // when
-        val results = postService.getAllPosts()
+        val results = postService.getAllPosts(0)
         // then
-        assertThat(results).hasSize(2)
-        assertThat(results[0].title).isEqualTo("post 1")
-        assertThat(results).extracting("title").containsExactly("post 1", "post 2")
+        assertThat(results.content).hasSize(2)
+        assertThat(results.content[0].title).isEqualTo("post 2")
+        assertThat(results.content).extracting("title").containsExactlyInAnyOrder("post 1", "post 2")
     }
 
     @Test
@@ -54,7 +63,7 @@ class PostServiceTest @Autowired constructor(
         val user = userRepository.save(User("abc@gmail.com", "password", "nickname"))
         val savedPost = postRepository.save(Post("title", "content", user))
         // when
-        val foundPost = postService.getPostById(savedPost.id!!)
+        val foundPost = postService.getPostById(savedPost.id)
         // then
         assertThat(foundPost).isNotNull
         assertThat(foundPost.title).isEqualTo("title")
@@ -68,7 +77,7 @@ class PostServiceTest @Autowired constructor(
         val title = "title"
         val content = "content"
         val user = userRepository.save(User("abc@gmail.com", "password", "nickname"))
-        val post = PostSaveRequest(title, content, user.id!!)
+        val post = PostSaveRequest(title, content, user.id)
         // when
         postService.savePost(post)
         // then
@@ -87,13 +96,13 @@ class PostServiceTest @Autowired constructor(
         val updatedTitle = "updated title"
         val updatedContent = "updated content"
         // when
-        val updatedPost = postService.updatePost(post.id!!, PostUpdateRequest(updatedTitle, updatedContent))
+        val updatedPost = postService.updatePost(post.id, PostUpdateRequest(updatedTitle, updatedContent))
         // then
-        assertThat(post.id!!).isEqualTo(updatedPost.id)
+        assertThat(post.id).isEqualTo(updatedPost.id)
         assertThat(updatedPost.title).isEqualTo("updated title")
         assertThat(updatedPost.content).isEqualTo("updated content")
         assertThat(post).isNotEqualTo(updatedPost)
-        assertThat(updatedPost.updatedAt).isAfter(post.updatedAt)
+        assertThat(updatedPost.updatedAt).isAfter(post.createdAt)
     }
 
     @Test
@@ -103,7 +112,7 @@ class PostServiceTest @Autowired constructor(
         val user = userRepository.save(User("abc@gmail.com", "password", "nickname"))
         val post = postRepository.save(Post("title", "content", user))
         // when
-        postService.deletePostById(post.id!!)
+        postService.deletePostById(post.id)
         // then
         val allPosts = postRepository.findAll()
         assertThat(allPosts.size).isEqualTo(0)

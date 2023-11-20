@@ -18,33 +18,11 @@ class PostRepositoryTest(
     @Autowired val userRepository: UserRepository,
 ) {
 
-//    @BeforeEach
-//    fun saveUser() {
-//        userRepository.save(User("abc@gmail.com", "password", "nickname"))
-//    }
-
     @AfterEach
     fun clean() {
         postRepository.deleteAll()
         userRepository.deleteAll()
     }
-
-//    @Test
-//    @DisplayName("전체 글 조회 테스트(레포지토리)")
-//    fun findAllTest() {
-//        // given
-//        userRepository.save(User("abc@gmail.com", "password", "nickname"))
-//        val post1 = Post.fixture("test title 1", "test content 1")
-//        val post2 = Post.fixture("test title 2", "test content 2")
-//        postRepository.save(post1)
-//        postRepository.save(post2)
-//        // when
-//        val results = postRepository.findAll()
-//        // then
-//        assertThat(results.size).isEqualTo(2)
-//        assertThat(results[0].title).isEqualTo(post1.title)
-//        assertThat(results[1].content).isEqualTo(post2.content)
-//    }
 
     @Test
     @DisplayName("전체 글 조회 테스트(레포지토리)")
@@ -122,7 +100,7 @@ class PostRepositoryTest(
         val post = Post("to be deleted post title", "to be deleted post content", user)
         val savedPost = postRepository.save(post)
         // when
-        postRepository.deleteById(savedPost.id!!)
+        postRepository.deleteById(savedPost.id)
         /*
         !! 연산자를 사용하여 savedPost.id가 null일 경우 NullPointerException을 던지도록 강제하였다.
          테스트 코드에서는 예상치 못한 상황이 발생했을 때 즉시 테스트를 실패시키는 게 좋으므로 테스트 코드에서 이렇게 작성하는건 괜찮지만
@@ -133,7 +111,7 @@ class PostRepositoryTest(
         */
 
         // then
-        assertThat(postRepository.findById(savedPost.id!!)).isEmpty()
+        assertThat(postRepository.findById(savedPost.id)).isEmpty()
         assertThat(postRepository.findAll()).isEmpty()
     }
 }

@@ -7,6 +7,10 @@ import com.kotlin.blog.dto.response.PostListResponse
 import com.kotlin.blog.dto.response.PostResponse
 import com.kotlin.blog.repository.PostRepository
 import com.kotlin.blog.repository.UserRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,8 +21,9 @@ class PostServiceImpl(
     private val userRepository: UserRepository,
 ) : PostService {
 
-    override fun getAllPosts(): List<PostListResponse> {
-        return postRepository.findAll().map { post -> PostListResponse.toDto(post) }
+    override fun getAllPosts(page: Int): Page<PostListResponse> {
+        val pageable: Pageable = PageRequest.of(page, 10, Sort.by("id").descending())
+        return postRepository.findAll(pageable).map { post -> PostListResponse.toDto(post) }
     }
 
     override fun getPostById(id: Long): PostResponse { // get 요청일 때는 @Transactional 적용하지 않기
