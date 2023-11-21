@@ -3,6 +3,7 @@ package com.kotlin.blog.service
 import com.kotlin.blog.domain.Post
 import com.kotlin.blog.dto.request.PostSaveRequest
 import com.kotlin.blog.dto.request.PostUpdateRequest
+import com.kotlin.blog.dto.request.SortingRequest
 import com.kotlin.blog.dto.response.PostListResponse
 import com.kotlin.blog.dto.response.PostResponse
 import com.kotlin.blog.repository.PostRepository
@@ -21,8 +22,14 @@ class PostServiceImpl(
     private val userRepository: UserRepository,
 ) : PostService {
 
-    override fun getAllPosts(page: Int): Page<PostListResponse> {
-        val pageable: Pageable = PageRequest.of(page, 10, Sort.by("id").descending())
+    companion object {
+        const val PAGE_SIZE = 10
+    }
+
+    override fun getAllPosts(page: Int, sortingRequest: SortingRequest): Page<PostListResponse> {
+        val direction = if (sortingRequest.order == "asc") Sort.Direction.ASC else Sort.Direction.DESC
+
+        val pageable: Pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(direction, sortingRequest.sortBy))
         return postRepository.findAll(pageable).map { post -> PostListResponse.toDto(post) }
     }
 

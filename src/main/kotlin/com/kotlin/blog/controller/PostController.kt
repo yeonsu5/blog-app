@@ -2,6 +2,7 @@ package com.kotlin.blog.controller
 
 import com.kotlin.blog.dto.request.PostSaveRequest
 import com.kotlin.blog.dto.request.PostUpdateRequest
+import com.kotlin.blog.dto.request.SortingRequest
 import com.kotlin.blog.dto.response.PostListResponse
 import com.kotlin.blog.dto.response.PostResponse
 import com.kotlin.blog.service.PostService
@@ -28,8 +29,14 @@ class PostController(
 ) {
 
     @GetMapping("/posts")
-    fun findAll(@RequestParam(value = "page", defaultValue = "0") page: Int): ResponseEntity<ApiResponse<Page<PostListResponse>>> {
-        val allPosts = postService.getAllPosts(page)
+    fun findAll(
+        @RequestParam(value = "page", defaultValue = "0") page: Int,
+        @RequestParam(value = "sortBy", defaultValue = "id") sortBy: String,
+        @RequestParam(value = "order", defaultValue = "desc") order: String,
+    ): ResponseEntity<ApiResponse<Page<PostListResponse>>> {
+        val sortingRequest = SortingRequest(sortBy, order)
+
+        val allPosts = postService.getAllPosts(page, sortingRequest)
 
         return response(HttpStatus.OK, "게시글 목록 조회", allPosts)
     }

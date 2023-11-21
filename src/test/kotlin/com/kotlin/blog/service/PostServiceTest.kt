@@ -4,6 +4,7 @@ import com.kotlin.blog.domain.Post
 import com.kotlin.blog.domain.User
 import com.kotlin.blog.dto.request.PostSaveRequest
 import com.kotlin.blog.dto.request.PostUpdateRequest
+import com.kotlin.blog.dto.request.SortingRequest
 import com.kotlin.blog.repository.PostRepository
 import com.kotlin.blog.repository.UserRepository
 import org.assertj.core.api.Assertions.assertThat
@@ -48,8 +49,9 @@ class PostServiceTest @Autowired constructor(
                 Post("post 2", "post 2 content", user),
             ),
         )
+        val sortingRequest = SortingRequest("id", "desc")
         // when
-        val results = postService.getAllPosts(0)
+        val results = postService.getAllPosts(0, sortingRequest)
         // then
         assertThat(results.content).hasSize(2)
         assertThat(results.content[0].title).isEqualTo("post 2")
