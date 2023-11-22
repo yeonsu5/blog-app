@@ -8,7 +8,7 @@ data class SortingRequest(
 enum class SortBy(val fieldName: String) {
     ID("id"),
     TITLE("title"),
-    CREATED_AT("createdAt")
+    CREATED_AT("createdAt"),
 }
 
 enum class OrderBy {
