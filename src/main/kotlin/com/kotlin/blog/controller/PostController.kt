@@ -1,7 +1,9 @@
 package com.kotlin.blog.controller
 
+import com.kotlin.blog.dto.request.OrderBy
 import com.kotlin.blog.dto.request.PostSaveRequest
 import com.kotlin.blog.dto.request.PostUpdateRequest
+import com.kotlin.blog.dto.request.SortBy
 import com.kotlin.blog.dto.request.SortingRequest
 import com.kotlin.blog.dto.response.PostListResponse
 import com.kotlin.blog.dto.response.PostResponse
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.util.*
 
 @RestController
 @RequestMapping("/api")
@@ -31,10 +34,10 @@ class PostController(
     @GetMapping("/posts")
     fun findAll(
         @RequestParam(value = "page", defaultValue = "0") page: Int,
-        @RequestParam(value = "sortBy", defaultValue = "id") sortBy: String,
-        @RequestParam(value = "order", defaultValue = "desc") order: String,
+        @RequestParam(value = "sortBy", required = false) sortBy: SortBy?,
+        @RequestParam(value = "orderBy", required = false) orderBy: OrderBy?,
     ): ResponseEntity<ApiResponse<Page<PostListResponse>>> {
-        val sortingRequest = SortingRequest(sortBy, order)
+        val sortingRequest = SortingRequest(sortBy ?: SortBy.ID, orderBy ?: OrderBy.DESC)
 
         val allPosts = postService.getAllPosts(page, sortingRequest)
 

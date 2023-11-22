@@ -2,8 +2,10 @@ package com.kotlin.blog.service
 
 import com.kotlin.blog.domain.Post
 import com.kotlin.blog.domain.User
+import com.kotlin.blog.dto.request.OrderBy
 import com.kotlin.blog.dto.request.PostSaveRequest
 import com.kotlin.blog.dto.request.PostUpdateRequest
+import com.kotlin.blog.dto.request.SortBy
 import com.kotlin.blog.dto.request.SortingRequest
 import com.kotlin.blog.repository.PostRepository
 import com.kotlin.blog.repository.UserRepository
@@ -49,13 +51,32 @@ class PostServiceTest @Autowired constructor(
                 Post("post 2", "post 2 content", user),
             ),
         )
-        val sortingRequest = SortingRequest("id", "desc")
+        val sortingRequest = SortingRequest()
         // when
         val results = postService.getAllPosts(0, sortingRequest)
         // then
         assertThat(results.content).hasSize(2)
         assertThat(results.content[0].title).isEqualTo("post 2")
         assertThat(results.content).extracting("title").containsExactlyInAnyOrder("post 1", "post 2")
+    }
+
+    @Test
+    @DisplayName("정렬 기능 테스트")
+    fun getAllPostsSortingTest() {
+        // given
+        val user = userRepository.save(User("abc@gmail.com", "password", "nickname"))
+        postRepository.saveAll(
+            listOf(
+                Post("post 1", "post 1 content", user),
+                Post("post 2", "post 2 content", user),
+            ),
+        )
+        val sortingRequest = SortingRequest(SortBy.TITLE, OrderBy.DESC)
+        // when
+        val results = postService.getAllPosts(0, sortingRequest)
+        // then
+        assertThat(results.content).hasSize(2)
+        assertThat(results.content).extracting("title").containsExactlyInAnyOrder("post 2", "post 1")
     }
 
     @Test
