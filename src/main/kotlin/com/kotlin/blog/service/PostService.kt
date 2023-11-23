@@ -1,24 +1,24 @@
 package com.kotlin.blog.service
 
-import com.kotlin.blog.dto.request.PostSaveRequest
-import com.kotlin.blog.dto.request.PostUpdateRequest
+import com.kotlin.blog.domain.vo.PostListViewVo
+import com.kotlin.blog.domain.vo.PostSaveVo
+import com.kotlin.blog.domain.vo.PostUpdateVo
+import com.kotlin.blog.domain.vo.PostViewVo
 import com.kotlin.blog.dto.request.SortingRequest
-import com.kotlin.blog.dto.response.PostListResponse
-import com.kotlin.blog.dto.response.PostResponse
 import org.springframework.data.domain.Page
 
 interface PostService {
     // 전체 조회
-    fun getAllPosts(page: Int, sortingRequest: SortingRequest): Page<PostListResponse>
+    fun getAllPosts(page: Int, sortingRequest: SortingRequest): Page<PostListViewVo>
 
     // 1개 조회
-    fun getPostById(id: Long): PostResponse
+    fun getPostById(id: Long): PostViewVo
 
     // 작성
-    fun savePost(request: PostSaveRequest): PostResponse
+    fun savePost(postSaveVo: PostSaveVo)
 
     // 수정
-    fun updatePost(id: Long, request: PostUpdateRequest): PostResponse
+    fun updatePost(postUpdateVo: PostUpdateVo)
 
     // 삭제
     fun deletePostById(id: Long)

@@ -1,14 +1,16 @@
 package com.kotlin.blog.repository
 
-import com.kotlin.blog.domain.Post
-import com.kotlin.blog.domain.User
+import com.kotlin.blog.domain.entity.Post
+import com.kotlin.blog.domain.entity.User
+import com.kotlin.blog.domain.vo.PostSaveVo
+import com.kotlin.blog.domain.vo.PostUpdateVo
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.repository.findByIdOrNull
+import org.springframework.data.domain.PageRequest
 import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest
@@ -34,12 +36,13 @@ class PostRepositoryTest(
         val post2 = Post("test title 2", "test content 2", user)
         postRepository.save(post1)
         postRepository.save(post2)
+        val pageable = PageRequest.of(0, 10)
         // when
-        val results = postRepository.findAll()
+        val results = postRepository.findAllPosts(pageable)
         // then
-        assertThat(results.size).isEqualTo(2)
-        assertThat(results[0].title).isEqualTo(post1.title)
-        assertThat(results[1].content).isEqualTo(post2.content)
+        assertThat(results.content).hasSize(2)
+        assertThat(results.totalElements).isEqualTo(2)
+        assertThat(results.content[1].title).isEqualTo("test title 2")
     }
 
     @Test
@@ -50,7 +53,7 @@ class PostRepositoryTest(
         val post = Post("test title", "test content", user)
         postRepository.save(post)
         // when
-        val result = postRepository.findByIdOrNull(post.id)
+        val result = postRepository.findPostById(post.id)
         // then
         assertThat(result).isNotNull
         assertThat(result?.title).isEqualTo(post.title)
@@ -63,11 +66,14 @@ class PostRepositoryTest(
         // given
         val user = userRepository.save(User("abc@gmail.com", "password", "nickname"))
         val post = Post("test title", "test content", user)
+        val vo = PostSaveVo("test title", "test content", user.id)
         // when
-        val result = postRepository.save(post)
+//        postRepository.save(post)
+        postRepository.savePost(vo.title, vo.content, vo.createdAt, vo.userId)
         // then
-        assertThat(result).isEqualTo(post)
-        assertThat(result).isInstanceOf(Post::class.java) // Post::class 라는 Kotlin의 클래스 레퍼런스를 java 클래스로 변환
+        val findAll = postRepository.findAll()
+        assertThat(findAll).hasSize(1)
+        assertThat(findAll[0].title).isEqualTo("test title")
     }
 
     @Test
@@ -76,20 +82,19 @@ class PostRepositoryTest(
         // given
         val user = userRepository.save(User("abc@gmail.com", "password", "nickname"))
         val post = Post("initial title", "initial content", user)
-        val savedPost = postRepository.save(post)
+        postRepository.save(post)
         val updatedTitle = "updated title"
         val updatedContent = "updated content"
 
-        savedPost.title = updatedTitle
-        savedPost.content = updatedContent
+        val vo = PostUpdateVo(post.id, updatedTitle, updatedContent)
 
         // when
-        val updatedPost = postRepository.save(savedPost)
+        postRepository.updatePost(vo.id, vo.title, vo.content, vo.updatedAt)
 
         // then
-        assertThat(updatedPost.id).isEqualTo(savedPost.id)
-        assertThat(updatedPost.title).isEqualTo(updatedTitle)
-        assertThat(updatedPost.content).isEqualTo(updatedContent)
+        val findAll = postRepository.findAll()
+        assertThat(findAll).hasSize(1)
+        assertThat(findAll[0].title).isEqualTo("updated title")
     }
 
     @Test

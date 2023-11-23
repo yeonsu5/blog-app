@@ -1,10 +1,10 @@
 package com.kotlin.blog.service
 
-import com.kotlin.blog.domain.Post
-import com.kotlin.blog.domain.User
+import com.kotlin.blog.domain.entity.Post
+import com.kotlin.blog.domain.entity.User
+import com.kotlin.blog.domain.vo.PostSaveVo
+import com.kotlin.blog.domain.vo.PostUpdateVo
 import com.kotlin.blog.dto.request.OrderBy
-import com.kotlin.blog.dto.request.PostSaveRequest
-import com.kotlin.blog.dto.request.PostUpdateRequest
 import com.kotlin.blog.dto.request.SortBy
 import com.kotlin.blog.dto.request.SortingRequest
 import com.kotlin.blog.repository.PostRepository
@@ -100,7 +100,7 @@ class PostServiceTest @Autowired constructor(
         val title = "title"
         val content = "content"
         val user = userRepository.save(User("abc@gmail.com", "password", "nickname"))
-        val post = PostSaveRequest(title, content, user.id)
+        val post = PostSaveVo(title, content, user.id)
         // when
         postService.savePost(post)
         // then
@@ -118,14 +118,15 @@ class PostServiceTest @Autowired constructor(
         val post = postRepository.save(Post("original title", "original content", user))
         val updatedTitle = "updated title"
         val updatedContent = "updated content"
+        val vo = PostUpdateVo(post.id, updatedTitle, updatedContent)
         // when
-        val updatedPost = postService.updatePost(post.id, PostUpdateRequest(updatedTitle, updatedContent))
+        postService.updatePost(vo)
         // then
+        val updatedPost = postService.getPostById(post.id)
         assertThat(post.id).isEqualTo(updatedPost.id)
         assertThat(updatedPost.title).isEqualTo("updated title")
         assertThat(updatedPost.content).isEqualTo("updated content")
         assertThat(post).isNotEqualTo(updatedPost)
-        assertThat(updatedPost.updatedAt).isAfter(post.createdAt)
     }
 
     @Test

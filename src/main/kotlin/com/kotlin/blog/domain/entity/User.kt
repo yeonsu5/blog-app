@@ -1,4 +1,4 @@
-package com.kotlin.blog.domain
+package com.kotlin.blog.domain.entity
 
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column

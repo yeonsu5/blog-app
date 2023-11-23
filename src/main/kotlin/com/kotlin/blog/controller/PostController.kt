@@ -1,5 +1,7 @@
 package com.kotlin.blog.controller
 
+import com.kotlin.blog.domain.vo.PostSaveVo
+import com.kotlin.blog.domain.vo.PostUpdateVo
 import com.kotlin.blog.dto.request.OrderBy
 import com.kotlin.blog.dto.request.PostSaveRequest
 import com.kotlin.blog.dto.request.PostUpdateRequest
@@ -38,7 +40,9 @@ class PostController(
     ): ResponseEntity<ApiResponse<Page<PostListResponse>>> {
         val sortingRequest = SortingRequest(sortBy ?: SortBy.ID, orderBy ?: OrderBy.DESC)
 
-        val allPosts = postService.getAllPosts(page, sortingRequest)
+        val allPosts = postService.getAllPosts(page, sortingRequest).map { postVo ->
+            PostListResponse.VotoDto(postVo)
+        }
 
         return response(HttpStatus.OK, "게시글 목록 조회", allPosts)
     }
@@ -46,16 +50,21 @@ class PostController(
     @ExistenceCheck
     @GetMapping("/posts/{id}")
     fun findPostById(@PathVariable id: Long): ResponseEntity<ApiResponse<PostResponse>> {
-        val post = postService.getPostById(id)
+        val postById = postService.getPostById(id)
+
+        val post = PostResponse.VotoDto(postById)
 
         return response(HttpStatus.OK, "게시글 상세 조회", post)
     }
 
     @PostMapping("/posts")
     fun createPost(@RequestBody request: PostSaveRequest): ResponseEntity<ApiResponse<PostResponse>> {
-        val savedPost = postService.savePost(request)
+        // request를 vo로 변환
+        val postSaveVo = PostSaveVo(request.title, request.content, request.userId)
 
-        return response(HttpStatus.CREATED, "게시글 작성", savedPost)
+        postService.savePost(postSaveVo)
+
+        return response(HttpStatus.CREATED, "게시글 작성")
     }
 
     @ExistenceCheck
@@ -70,8 +79,10 @@ class PostController(
     @PutMapping("/posts/{id}")
     fun updatePost(@PathVariable id: Long, @RequestBody request: PostUpdateRequest):
         ResponseEntity<ApiResponse<PostResponse>> {
-        val updatedPost = postService.updatePost(id, request)
+        val postUpdateVo = PostUpdateVo(id, request.title, request.content)
 
-        return response(HttpStatus.OK, "게시글 수정", updatedPost)
+        postService.updatePost(postUpdateVo)
+
+        return response(HttpStatus.OK, "게시글 수정")
     }
 }
