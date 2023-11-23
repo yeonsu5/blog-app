@@ -7,7 +7,6 @@ import com.kotlin.blog.domain.vo.PostViewVo
 import com.kotlin.blog.dto.request.OrderBy
 import com.kotlin.blog.dto.request.SortingRequest
 import com.kotlin.blog.repository.PostRepository
-import com.kotlin.blog.repository.UserRepository
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
@@ -18,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class PostServiceImpl(
     private val postRepository: PostRepository,
-    private val userRepository: UserRepository,
 ) : PostService {
 
     companion object {

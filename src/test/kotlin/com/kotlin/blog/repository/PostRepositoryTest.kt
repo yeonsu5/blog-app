@@ -56,8 +56,8 @@ class PostRepositoryTest(
         val result = postRepository.findPostById(post.id)
         // then
         assertThat(result).isNotNull
-        assertThat(result?.title).isEqualTo(post.title)
-        assertThat(result?.content).isEqualTo(post.content)
+        assertThat(result.title).isEqualTo(post.title)
+        assertThat(result.content).isEqualTo(post.content)
     }
 
     @Test
@@ -65,7 +65,6 @@ class PostRepositoryTest(
     fun saveTest() {
         // given
         val user = userRepository.save(User("abc@gmail.com", "password", "nickname"))
-        val post = Post("test title", "test content", user)
         val vo = PostSaveVo("test title", "test content", user.id)
         // when
 //        postRepository.save(post)

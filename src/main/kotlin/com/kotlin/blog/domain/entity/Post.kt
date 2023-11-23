@@ -22,10 +22,4 @@ class Post(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
     // dto, vo, entity 역할
-) {
-    fun update(title: String, content: String, updatedAt: LocalDateTime) {
-        this.title = title
-        this.content = content
-        this.updatedAt = updatedAt
-    }
-}
+)

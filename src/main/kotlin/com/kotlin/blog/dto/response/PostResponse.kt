@@ -1,6 +1,5 @@
 package com.kotlin.blog.dto.response
 
-import com.kotlin.blog.domain.entity.Post
 import com.kotlin.blog.domain.vo.PostViewVo
 import java.time.LocalDateTime
 
@@ -21,17 +20,6 @@ data class PostResponse(
                 createdAt = postViewVo.createdAt,
                 updatedAt = postViewVo.updatedAt,
                 id = postViewVo.id,
-            )
-        }
-
-        fun toDto(post: Post): PostResponse {
-            return PostResponse(
-                title = post.title,
-                content = post.content,
-                authorName = post.author.nickname,
-                createdAt = post.createdAt,
-                updatedAt = post.updatedAt,
-                id = post.id,
             )
         }
     }
