@@ -2,6 +2,7 @@ package com.kotlin.blog.service
 
 import com.kotlin.blog.domain.vo.PostListViewVo
 import com.kotlin.blog.domain.vo.PostSaveVo
+import com.kotlin.blog.domain.vo.PostSearchViewVo
 import com.kotlin.blog.domain.vo.PostUpdateVo
 import com.kotlin.blog.domain.vo.PostViewVo
 import com.kotlin.blog.dto.request.OrderBy
@@ -24,9 +25,7 @@ class PostServiceImpl(
     }
 
     override fun getAllPosts(page: Int, sortingRequest: SortingRequest): Page<PostListViewVo> {
-        val direction = if (sortingRequest.orderBy == OrderBy.ASC) Sort.Direction.ASC else Sort.Direction.DESC
-
-        val pageable: Pageable = PageRequest.of(page, PAGE_SIZE, Sort.by(direction, sortingRequest.sortBy.fieldName))
+        val pageable = creatingPageable(page, sortingRequest)
 
         return postRepository.findAllPosts(pageable)
     }
@@ -48,5 +47,18 @@ class PostServiceImpl(
     @Transactional
     override fun updatePost(postUpdateVo: PostUpdateVo) {
         postRepository.updatePost(postUpdateVo.id, postUpdateVo.title, postUpdateVo.content, postUpdateVo.updatedAt)
+    }
+
+    override fun searchPosts(keyword: String, page: Int, sortingRequest: SortingRequest): Page<PostSearchViewVo> {
+        val pageable = creatingPageable(page, sortingRequest)
+
+        return postRepository.searchPosts(keyword, pageable)
+    }
+
+    private fun creatingPageable(page: Int, sortingRequest: SortingRequest): Pageable {
+        val sortDirection = if (sortingRequest.orderBy == OrderBy.ASC) Sort.Direction.ASC else Sort.Direction.DESC
+        val sortingField = sortingRequest.sortBy.fieldName
+
+        return PageRequest.of(page, PAGE_SIZE, Sort.by(sortDirection, sortingField))
     }
 }

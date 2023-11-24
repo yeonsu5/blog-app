@@ -2,6 +2,7 @@ package com.kotlin.blog.repository
 
 import com.kotlin.blog.domain.entity.Post
 import com.kotlin.blog.domain.vo.PostListViewVo
+import com.kotlin.blog.domain.vo.PostSearchViewVo
 import com.kotlin.blog.domain.vo.PostViewVo
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -40,4 +41,10 @@ interface PostRepository : JpaRepository<Post, Long> {
         @Param("content") content: String,
         @Param("updatedAt") updatedAt: LocalDateTime,
     )
+
+    @Query(
+        "SELECT NEW com.kotlin.blog.domain.vo.PostSearchViewVo(p.id, p.title, p.author.nickname, p.createdAt, p.updatedAt) From Post p " +
+            "WHERE LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(p.content) LIKE LOWER(CONCAT('%', :keyword, '%'))",
+    )
+    fun searchPosts(@Param("keyword") keyword: String, pageable: Pageable): Page<PostSearchViewVo>
 }

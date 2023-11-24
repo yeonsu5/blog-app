@@ -12,7 +12,7 @@ data class PostResponse(
     val id: Long,
 ) {
     companion object {
-        fun VotoDto(postViewVo: PostViewVo): PostResponse {
+        fun voToDto(postViewVo: PostViewVo): PostResponse {
             return PostResponse(
                 title = postViewVo.title,
                 content = postViewVo.content,

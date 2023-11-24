@@ -2,6 +2,7 @@ package com.kotlin.blog.service
 
 import com.kotlin.blog.domain.vo.PostListViewVo
 import com.kotlin.blog.domain.vo.PostSaveVo
+import com.kotlin.blog.domain.vo.PostSearchViewVo
 import com.kotlin.blog.domain.vo.PostUpdateVo
 import com.kotlin.blog.domain.vo.PostViewVo
 import com.kotlin.blog.dto.request.SortingRequest
@@ -22,4 +23,7 @@ interface PostService {
 
     // 삭제
     fun deletePostById(id: Long)
+
+    // 검색
+    fun searchPosts(keyword: String, page: Int, sortingRequest: SortingRequest): Page<PostSearchViewVo>
 }

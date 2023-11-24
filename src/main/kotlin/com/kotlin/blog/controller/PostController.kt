@@ -41,7 +41,7 @@ class PostController(
         val sortingRequest = SortingRequest(sortBy ?: SortBy.ID, orderBy ?: OrderBy.DESC)
 
         val allPosts = postService.getAllPosts(page, sortingRequest).map { postVo ->
-            PostListResponse.VotoDto(postVo)
+            PostListResponse.voToDto(postVo)
         }
 
         return response(HttpStatus.OK, "게시글 목록 조회", allPosts)
@@ -52,7 +52,7 @@ class PostController(
     fun findPostById(@PathVariable id: Long): ResponseEntity<ApiResponse<PostResponse>> {
         val postById = postService.getPostById(id)
 
-        val post = PostResponse.VotoDto(postById)
+        val post = PostResponse.voToDto(postById)
 
         return response(HttpStatus.OK, "게시글 상세 조회", post)
     }
@@ -84,5 +84,22 @@ class PostController(
         postService.updatePost(postUpdateVo)
 
         return response(HttpStatus.OK, "게시글 수정")
+    }
+
+    @GetMapping("/posts/search")
+    fun searchPostsByKeyword(
+        @RequestParam(value = "keyword") keyword: String,
+        @RequestParam(value = "page", defaultValue = "0") page: Int,
+        @RequestParam(value = "sortBy", required = false) sortBy: SortBy?,
+        @RequestParam(value = "orderBy", required = false) orderBy: OrderBy?,
+    ):
+        ResponseEntity<ApiResponse<Page<PostListResponse>>> {
+        val sortingRequest = SortingRequest(sortBy ?: SortBy.ID, orderBy ?: OrderBy.DESC)
+
+        val searchedPosts = postService.searchPosts(keyword, page, sortingRequest).map { postVo ->
+            PostListResponse.voToDto(postVo)
+        }
+
+        return response(HttpStatus.OK, "키워드 검색", searchedPosts)
     }
 }

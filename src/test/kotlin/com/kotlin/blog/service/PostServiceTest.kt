@@ -3,6 +3,7 @@ package com.kotlin.blog.service
 import com.kotlin.blog.domain.entity.Post
 import com.kotlin.blog.domain.entity.User
 import com.kotlin.blog.domain.vo.PostSaveVo
+import com.kotlin.blog.domain.vo.PostSearchViewVo
 import com.kotlin.blog.domain.vo.PostUpdateVo
 import com.kotlin.blog.dto.request.OrderBy
 import com.kotlin.blog.dto.request.SortBy
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.domain.Page
 import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest
@@ -141,5 +143,32 @@ class PostServiceTest @Autowired constructor(
         val allPosts = postRepository.findAll()
         assertThat(allPosts.size).isEqualTo(0)
         assertThat(allPosts).isEmpty()
+    }
+
+    @Test
+    @DisplayName("키워드 검색(서비스)")
+    fun searchPostsTest() {
+        // given
+        val user = userRepository.save(User("abc@gmail.com", "password", "nickname"))
+
+        postRepository.saveAll(
+            listOf(
+                Post("Test Post 1", "This is a test post.", user),
+                Post("Another Test Post", "This is another test post", user),
+                Post("ABC", "def", user),
+            ),
+        )
+        val keyword = "test"
+        val page = 0
+        val sortingRequest = SortingRequest(SortBy.ID, OrderBy.ASC) // 정렬 순서 : id 기준 오름차순
+
+        // when
+        val result: Page<PostSearchViewVo> = postService.searchPosts(keyword, page, sortingRequest)
+
+        // then
+        assertThat(result).isNotNull
+        assertThat(result.content).hasSize(2)
+        assertThat(result.content[0].title).isEqualTo("Test Post 1") // 정렬 순서 확인
+        assertThat(result.content[1].title).isEqualTo("Another Test Post")
     }
 }

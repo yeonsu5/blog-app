@@ -118,4 +118,38 @@ class PostRepositoryTest(
         assertThat(postRepository.findById(savedPost.id)).isEmpty()
         assertThat(postRepository.findAll()).isEmpty()
     }
+
+    @Test
+    @DisplayName("키워드 검색 (레포지토리)")
+    fun searchPostsTest() {
+        // given
+        val user = User("abc@gmail.com", "password", "nickname")
+        userRepository.save(user)
+        val post1 = Post("apple bear carrot", "dummy data for testing", user)
+        val post2 = Post("title for test", "테스트를 위한 본문", user)
+        val post3 = Post("AppLe BeAr car", "본문입니다", user)
+        postRepository.save(post1)
+        postRepository.save(post2)
+        postRepository.save(post3)
+        val pageable = PageRequest.of(0, 10)
+
+        // when (1. 한글 검색, 2. 영문 검색, 3. 대소문자 구분 없이 검색되는지 확인)
+        val resultForKorean = postRepository.searchPosts("본문", pageable)
+
+        val resultForSimpleSearch = postRepository.searchPosts("test", pageable)
+
+        val resultsForIgnoringCase = postRepository.searchPosts("appLe", pageable)
+
+        // then
+        assertThat(resultForKorean.content).hasSize(2)
+        assertThat(resultForKorean.content).extracting("title").containsExactlyInAnyOrder("title for test", "AppLe BeAr car")
+
+        assertThat(resultForSimpleSearch.content).hasSize(2)
+        assertThat(resultForSimpleSearch.content).extracting("title")
+            .containsExactlyInAnyOrder("apple bear carrot", "title for test")
+
+        assertThat(resultsForIgnoringCase.content).hasSize(2)
+        assertThat(resultsForIgnoringCase.content).extracting("title")
+            .containsExactlyInAnyOrder("apple bear carrot", "AppLe BeAr car")
+    }
 }
