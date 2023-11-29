@@ -10,8 +10,6 @@ plugins {
 }
 allOpen {
     annotation("jakarta.persistence.Entity")
-    annotation("jakarta.persistence.Embeddable")
-    annotation("jakarta.persistence.MappedSuperclass")
 }
 
 group = "com.kotlin"
@@ -30,18 +28,23 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-starter-web:3.1.5")
     // spring security
-    implementation("org.springframework.security:spring-security-web:6.1.2")
-    implementation("org.springframework.security:spring-security-core:6.1.2")
+    implementation("org.springframework.security:spring-security-web:6.1.5")
+    implementation("org.springframework.security:spring-security-core:6.1.5")
+    implementation("org.springframework.security:spring-security-crypto:6.1.5")
+
     // mysql
     implementation("com.mysql:mysql-connector-j:8.1.0")
     // jpa, jackson
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:3.1.5")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     // querydsl
-    implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
+//    implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
     // h2 (test 코드용)
     runtimeOnly("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    // validation
+    implementation("org.springframework.boot:spring-boot-starter-validation:3.1.5")
+
 }
 
 tasks.withType<KotlinCompile> {
