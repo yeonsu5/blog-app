@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: db
+    active: db, jwt
 
   datasource:
     url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=utf-8
@@ -16,3 +16,6 @@ spring:
       hibernate:
         format_sql: true
         highlight_sql: true
+
+jwt:
+  secret: ${secret}

@@ -1,8 +1,11 @@
 package com.kotlin.blog.user.controller
 
+import com.kotlin.blog.common.authority.TokenInfo
 import com.kotlin.blog.common.util.ApiResponse
 import com.kotlin.blog.common.util.createResponse
+import com.kotlin.blog.user.domain.vo.UserLoginVo
 import com.kotlin.blog.user.domain.vo.UserRegisterVo
+import com.kotlin.blog.user.dto.request.UserLoginRequest
 import com.kotlin.blog.user.dto.request.UserRegisterRequest
 import com.kotlin.blog.user.service.UserService
 import jakarta.validation.Valid
@@ -29,5 +32,17 @@ class UserController(
         userService.register(userRegisterVo)
 
         return createResponse(HttpStatus.OK)
+    }
+
+    @PostMapping("/login")
+    fun login(
+        @RequestBody @Valid
+        request: UserLoginRequest,
+    ): ResponseEntity<ApiResponse<TokenInfo>> {
+        val userLoginVo = UserLoginVo(request.email, request.password)
+
+        val tokenInfo = userService.login(userLoginVo)
+
+        return createResponse(HttpStatus.OK, data = tokenInfo)
     }
 }

@@ -28,10 +28,12 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springframework.boot:spring-boot-starter-web:3.1.5")
     // spring security
-    implementation("org.springframework.security:spring-security-web:6.1.5")
-    implementation("org.springframework.security:spring-security-core:6.1.5")
-    implementation("org.springframework.security:spring-security-crypto:6.1.5")
-
+    implementation("org.springframework.boot:spring-boot-starter-security:3.1.5")
+    testImplementation("org.springframework.security:spring-security-test")
+    // jwt
+    implementation("io.jsonwebtoken:jjwt-api:0.12.3")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.3")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.3")
     // mysql
     implementation("com.mysql:mysql-connector-j:8.1.0")
     // jpa, jackson
@@ -44,7 +46,6 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     // validation
     implementation("org.springframework.boot:spring-boot-starter-validation:3.1.5")
-
 }
 
 tasks.withType<KotlinCompile> {
