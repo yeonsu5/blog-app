@@ -1,4 +1,4 @@
-package com.kotlin.blog.user.dto.request
+package com.kotlin.blog.common.security.controller.dto
 
 import jakarta.validation.constraints.NotBlank
 

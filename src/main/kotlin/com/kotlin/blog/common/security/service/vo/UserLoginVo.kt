@@ -1,4 +1,4 @@
-package com.kotlin.blog.user.domain.vo
+package com.kotlin.blog.common.security.service.vo
 
 data class UserLoginVo(
     val email: String,

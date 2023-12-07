@@ -1,5 +1,6 @@
 package com.kotlin.blog.user.repository
 
+import com.kotlin.blog.user.domain.entity.Role
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName
@@ -28,9 +29,10 @@ class UserRepositoryTest @Autowired constructor(
         val password = "password123!@"
         val createdAt = LocalDateTime.now()
         val nickname = "testUser"
+        val role = Role.USER
 
         // when
-        userRepository.register(email, password, createdAt, nickname)
+        userRepository.register(email, password, createdAt, nickname, role)
 
         // then
         val savedUser = userRepository.findByEmail(email)

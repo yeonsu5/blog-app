@@ -1,7 +1,6 @@
 package com.kotlin.blog.post.service
 
 import com.kotlin.blog.post.domain.entity.Post
-import com.kotlin.blog.user.domain.entity.User
 import com.kotlin.blog.post.domain.vo.PostSaveVo
 import com.kotlin.blog.post.domain.vo.PostSearchViewVo
 import com.kotlin.blog.post.domain.vo.PostUpdateVo
@@ -9,8 +8,8 @@ import com.kotlin.blog.post.dto.request.OrderBy
 import com.kotlin.blog.post.dto.request.SortBy
 import com.kotlin.blog.post.dto.request.SortingRequest
 import com.kotlin.blog.post.repository.PostRepository
+import com.kotlin.blog.user.domain.entity.User
 import com.kotlin.blog.user.repository.UserRepository
-import com.kotlin.blog.post.service.PostService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.DisplayName

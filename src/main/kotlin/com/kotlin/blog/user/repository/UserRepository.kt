@@ -1,5 +1,6 @@
 package com.kotlin.blog.user.repository
 
+import com.kotlin.blog.user.domain.entity.Role
 import com.kotlin.blog.user.domain.entity.User
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
@@ -20,11 +21,12 @@ interface UserRepository : JpaRepository<User, Long> {
 
     @Modifying
     @Transactional
-    @Query("INSERT INTO User(email, password, createdAt, nickname) SELECT :email, :password, :createdAt, :nickname")
+    @Query("INSERT INTO User(email, password, createdAt, nickname, role) SELECT :email, :password, :createdAt, :nickname, :role")
     fun register(
         @Param("email") email: String,
         @Param("password") password: String,
         @Param("createdAt") createdAt: LocalDateTime,
         @Param("nickname") nickname: String,
+        @Param("role") role: Role,
     )
 }
