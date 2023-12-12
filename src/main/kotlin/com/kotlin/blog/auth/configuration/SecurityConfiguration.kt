@@ -1,6 +1,8 @@
-package com.kotlin.blog.common.security.configuration
+package com.kotlin.blog.auth.configuration
 
-import com.kotlin.blog.common.security.jwt.JwtAuthenticationFilter
+import com.kotlin.blog.auth.emailPassword.EmailPasswordAuthenticationFilter
+import com.kotlin.blog.auth.jwt.JwtAuthenticationFilter
+import com.kotlin.blog.auth.jwt.JwtAuthenticationProvider
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -14,13 +16,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 class SecurityConfiguration(
-    private val authenticationProvider: AuthenticationProvider,
+    private val emailPasswordAuthenticationProvider: AuthenticationProvider,
+    private val jwtAuthenticationProvider: JwtAuthenticationProvider,
 ) {
 
     @Bean
     fun securityFilterChain(
         http: HttpSecurity,
         jwtAuthenticationFilter: JwtAuthenticationFilter,
+        emailPasswordAuthenticationFilter: EmailPasswordAuthenticationFilter,
     ): DefaultSecurityFilterChain {
         http
             .httpBasic { it.disable() }
@@ -38,7 +42,9 @@ class SecurityConfiguration(
             .sessionManagement {
                 it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
-            .authenticationProvider(authenticationProvider)
+            .authenticationProvider(emailPasswordAuthenticationProvider)
+            .authenticationProvider(jwtAuthenticationProvider)
+            .addFilterBefore(emailPasswordAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
 
         return http.build()

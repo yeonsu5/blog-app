@@ -19,6 +19,7 @@ interface UserRepository : JpaRepository<User, Long> {
 
     fun findByEmail(email: String): User?
 
+
     @Modifying
     @Transactional
     @Query("INSERT INTO User(email, password, createdAt, nickname, role) SELECT :email, :password, :createdAt, :nickname, :role")

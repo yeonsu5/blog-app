@@ -1,4 +1,4 @@
-package com.kotlin.blog.common.security.configuration
+package com.kotlin.blog.auth.configuration
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 

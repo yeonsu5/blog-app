@@ -1,15 +1,17 @@
-package com.kotlin.blog.common.security.jwt
+package com.kotlin.blog.auth.jwt
 
-import com.kotlin.blog.common.security.configuration.JwtProperties
+import com.kotlin.blog.auth.configuration.JwtProperties
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.security.Keys
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class TokenUtil(
+class JwtTokenUtil(
     jwtProperties: JwtProperties,
 ) {
 
@@ -21,25 +23,34 @@ class TokenUtil(
     fun generate(
         userDetails: UserDetails,
         expirationDate: Date,
-    ): String =
-        Jwts.builder()
+    ): String {
+        val role = userDetails.authorities.first().authority
+
+        return Jwts.builder()
             .claims()
             .subject(userDetails.username)
             .issuedAt(Date(System.currentTimeMillis()))
             .expiration(expirationDate)
+            .add("role", role)
             .and()
             .signWith(secretKey)
             .compact()
-
-    fun isValid(token: String, userDetails: UserDetails): Boolean {
-        val email = extractEmail(token)
-
-        return userDetails.username == email && !isExpired(token)
     }
 
-    fun extractEmail(token: String): String? =
+    fun isValid(token: String, userDetails: UserDetails): Boolean {
+        val userId = extractUserId(token)
+
+        return userDetails.username == userId && !isExpired(token)
+    }
+
+    fun extractUserId(token: String): String? =
         getAllClaims(token)
             .subject
+
+    fun extractAuthority(token: String): MutableCollection<GrantedAuthority>? {
+        val role = getAllClaims(token)["role"] as String
+        return mutableListOf(SimpleGrantedAuthority(role))
+    }
 
     fun isExpired(token: String): Boolean = // 만료 시간이 현재 시간 이전이면 만료된 토큰
         getAllClaims(token)

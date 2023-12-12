@@ -1,0 +1,47 @@
+package com.kotlin.blog.auth.emailPassword
+
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.kotlin.blog.auth.controller.dto.UserLoginRequest
+import jakarta.servlet.FilterChain
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
+import org.springframework.security.authentication.AuthenticationProvider
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.stereotype.Component
+import org.springframework.web.filter.OncePerRequestFilter
+
+@Component
+class EmailPasswordAuthenticationFilter(
+    private val emailPasswordAuthenticationProvider: AuthenticationProvider,
+) : OncePerRequestFilter() {
+
+    val objectMapper = ObjectMapper()
+
+    override fun doFilterInternal(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        filterChain: FilterChain,
+    ) {
+        if (isLoginRequest(request)) {
+            val authenticationRequest = objectMapper.readValue(request.inputStream, UserLoginRequest::class.java)
+            val usernamePasswordAuthenticationToken =
+                UsernamePasswordAuthenticationToken(
+                    authenticationRequest.email,
+                    authenticationRequest.password,
+                )
+            // 토큰 사용
+            val authenticatedToken =
+                emailPasswordAuthenticationProvider.authenticate(usernamePasswordAuthenticationToken)
+
+            if (authenticatedToken.isAuthenticated) {
+                SecurityContextHolder.getContext().authentication =
+                    authenticatedToken
+            }
+        }
+        filterChain.doFilter(request, response)
+    }
+
+    private fun isLoginRequest(request: HttpServletRequest) =
+        request.servletPath == "/api/auth/login" && request.method == "POST"
+}
