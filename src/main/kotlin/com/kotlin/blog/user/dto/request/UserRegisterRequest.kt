@@ -1,5 +1,6 @@
 package com.kotlin.blog.user.dto.request
 
+import com.kotlin.blog.common.exception.InvalidInputException
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
@@ -18,5 +19,14 @@ data class UserRegisterRequest(
     val password: String,
 
     @field:NotBlank
+    val confirmPassword: String,
+
+    @field:NotBlank
     val nickname: String,
-)
+) {
+    init {
+        require(password == confirmPassword) {
+            throw InvalidInputException("password", "비밀번호와 확인 비밀번호가 일치하지 않습니다.")
+        }
+    }
+}

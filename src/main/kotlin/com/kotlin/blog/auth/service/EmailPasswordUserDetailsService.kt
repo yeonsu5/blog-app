@@ -20,7 +20,7 @@ class EmailPasswordUserDetailsService(
             userRepository.findByEmail(email)
                 ?.mapToUserDetails(it)
         }
-            ?: throw UsernameNotFoundException("Username not found")
+            ?: throw UsernameNotFoundException("없는 사용자 Id입니다")
     }
 
     private fun ApplicationUser.mapToUserDetails(userId: Long): UserDetails =

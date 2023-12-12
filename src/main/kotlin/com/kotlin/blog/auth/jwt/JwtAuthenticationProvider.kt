@@ -16,10 +16,10 @@ class JwtAuthenticationProvider(
 
         val username = jwtTokenUtil.extractUserId(token)
         val userDetails = username?.let { userDetailsService.loadUserByUsername(it) }
-            ?: throw InvalidTokenException("Invalid token: Cannot find user")
+            ?: throw InvalidTokenException("유효하지 않은 토큰: 사용자를 찾을 수 없습니다")
 
         if (!jwtTokenUtil.isValid(token, userDetails)) {
-            throw InvalidTokenException("Invalid token: Token validation failed")
+            throw InvalidTokenException("유효하지 않은 토큰: 토큰 검증 실패")
         }
 
         val jwtAuthenticationToken = JwtAuthenticationToken(token, userDetails.username, userDetails.authorities)

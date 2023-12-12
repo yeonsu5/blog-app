@@ -19,7 +19,7 @@ class JwtUserDetailsService(
     override fun loadUserByUsername(username: String): UserDetails =
         userRepository.findByIdOrNull(username.toLong())
             ?.mapToUserDetails()
-            ?: throw UsernameNotFoundException("Username not found")
+            ?: throw UsernameNotFoundException("해당 email의 사용자를 찾을 수 없습니다")
 
     private fun ApplicationUser.mapToUserDetails(): UserDetails =
         User.builder()

@@ -11,7 +11,7 @@ import com.kotlin.blog.post.dto.response.PostListResponse
 import com.kotlin.blog.post.dto.response.PostResponse
 import com.kotlin.blog.post.service.PostService
 import com.kotlin.blog.common.util.ApiResponse
-import com.kotlin.blog.common.util.ExistenceCheck
+import com.kotlin.blog.common.annotation.ExistenceCheck
 import com.kotlin.blog.common.util.createResponse
 import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
