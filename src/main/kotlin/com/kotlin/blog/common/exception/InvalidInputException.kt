@@ -4,5 +4,5 @@ import java.lang.RuntimeException
 
 class InvalidInputException(
     val fieldName: String = "",
-    message: String = "Invalid Input",
+    message: String = "유효하지 않은 입력",
 ) : RuntimeException(message)

@@ -20,7 +20,7 @@ import org.springframework.data.domain.Page
 import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest
-@ActiveProfiles("test")
+//@ActiveProfiles("test")
 class PostServiceTest @Autowired constructor(
     private val postRepository: PostRepository,
     private val userRepository: UserRepository,

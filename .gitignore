@@ -38,6 +38,5 @@ out/
 
 
 ### profiles ###
-application-db.yml
-application-jwt.yml
+application-env.yml
 /src/test/resources/application.yml

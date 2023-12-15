@@ -5,23 +5,33 @@ import com.kotlin.blog.user.domain.vo.UserRegisterVo
 import com.kotlin.blog.user.repository.UserRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.TestPropertySource
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 
 @SpringBootTest
-@ActiveProfiles("test")
+//@ActiveProfiles("test")
 class UserServiceTest @Autowired constructor(
     val userService: UserService,
     val userRepository: UserRepository,
     val passwordEncoder: PasswordEncoder,
+    @Value("\${jwt.key}") val jwtKey: String
 ) {
+
+    @BeforeEach
+    fun before() {
+        println("----")
+        println(jwtKey)
+    }
 
     @AfterEach
     fun clean() {

@@ -15,7 +15,7 @@ import org.springframework.data.domain.PageRequest
 import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest
-@ActiveProfiles("test")
+//@ActiveProfiles("test")
 class PostRepositoryTest @Autowired constructor(
     val postRepository: PostRepository,
     val userRepository: UserRepository,

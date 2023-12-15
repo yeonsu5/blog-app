@@ -1,5 +1,8 @@
 package com.kotlin.blog.post.controller
 
+import com.kotlin.blog.common.annotation.ExistenceCheck
+import com.kotlin.blog.common.util.ApiResponse
+import com.kotlin.blog.common.util.createResponse
 import com.kotlin.blog.post.domain.vo.PostSaveVo
 import com.kotlin.blog.post.domain.vo.PostUpdateVo
 import com.kotlin.blog.post.dto.request.OrderBy
@@ -10,9 +13,7 @@ import com.kotlin.blog.post.dto.request.SortingRequest
 import com.kotlin.blog.post.dto.response.PostListResponse
 import com.kotlin.blog.post.dto.response.PostResponse
 import com.kotlin.blog.post.service.PostService
-import com.kotlin.blog.common.util.ApiResponse
-import com.kotlin.blog.common.annotation.ExistenceCheck
-import com.kotlin.blog.common.util.createResponse
+import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -35,10 +36,10 @@ class PostController(
     @GetMapping
     fun findAll(
         @RequestParam(value = "page", defaultValue = "0") page: Int,
-        @RequestParam(value = "sortBy", required = false) sortBy: SortBy?,
-        @RequestParam(value = "orderBy", required = false) orderBy: OrderBy?,
+        @RequestParam(value = "sortBy", required = false, defaultValue = "ID") sortBy: String,
+        @RequestParam(value = "orderBy", required = false, defaultValue = "DESC") orderBy: String,
     ): ResponseEntity<ApiResponse<Page<PostListResponse>>> {
-        val sortingRequest = SortingRequest(sortBy ?: SortBy.ID, orderBy ?: OrderBy.DESC)
+        val sortingRequest = createSortingRequest(sortBy, orderBy)
 
         val allPosts = postService.getAllPosts(page, sortingRequest).map { postVo ->
             PostListResponse.voToDto(postVo)
@@ -58,7 +59,10 @@ class PostController(
     }
 
     @PostMapping
-    fun createPost(@RequestBody request: PostSaveRequest): ResponseEntity<ApiResponse<Unit>> {
+    fun createPost(
+        @RequestBody @Valid
+        request: PostSaveRequest,
+    ): ResponseEntity<ApiResponse<Unit>> {
         // request를 vo로 변환
         val postSaveVo = PostSaveVo(request.title, request.content, request.userId)
 
@@ -77,7 +81,11 @@ class PostController(
 
     @ExistenceCheck
     @PutMapping("/{id}")
-    fun updatePost(@PathVariable id: Long, @RequestBody request: PostUpdateRequest):
+    fun updatePost(
+        @PathVariable id: Long,
+        @RequestBody @Valid
+        request: PostUpdateRequest,
+    ):
         ResponseEntity<ApiResponse<Unit>> {
         val postUpdateVo = PostUpdateVo(id, request.title, request.content)
 
@@ -90,16 +98,28 @@ class PostController(
     fun searchPostsByKeyword(
         @RequestParam(value = "keyword") keyword: String,
         @RequestParam(value = "page", defaultValue = "0") page: Int,
-        @RequestParam(value = "sortBy", required = false) sortBy: SortBy?,
-        @RequestParam(value = "orderBy", required = false) orderBy: OrderBy?,
+        @RequestParam(value = "sortBy", required = false, defaultValue = "ID") sortBy: String,
+        @RequestParam(value = "orderBy", required = false, defaultValue = "DESC") orderBy: String,
     ):
         ResponseEntity<ApiResponse<Page<PostListResponse>>> {
-        val sortingRequest = SortingRequest(sortBy ?: SortBy.ID, orderBy ?: OrderBy.DESC)
+        val sortingRequest = createSortingRequest(sortBy, orderBy)
 
         val searchedPosts = postService.searchPosts(keyword, page, sortingRequest).map { postVo ->
             PostListResponse.voToDto(postVo)
         }
 
         return createResponse(HttpStatus.OK, data = searchedPosts)
+    }
+
+    private fun createSortingRequest(
+        sortBy: String,
+        orderBy: String,
+    ): SortingRequest {
+        val sortByEnum = SortBy.entries.find { it.name.equals(sortBy, ignoreCase = true) }
+            ?: throw IllegalArgumentException("잘못된 정렬 기준: $sortBy")
+        val orderByEnum = OrderBy.entries.find { it.name.equals(orderBy, ignoreCase = true) }
+            ?: throw IllegalArgumentException("잘못된 정렬 순서: $orderBy")
+
+        return SortingRequest(sortByEnum, orderByEnum)
     }
 }

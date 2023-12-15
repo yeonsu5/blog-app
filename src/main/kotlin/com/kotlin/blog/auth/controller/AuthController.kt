@@ -2,10 +2,12 @@ package com.kotlin.blog.auth.controller
 
 import com.kotlin.blog.auth.controller.dto.AuthenticationResponse
 import com.kotlin.blog.auth.service.AuthenticationService
+import com.kotlin.blog.common.exception.LoginFailureException
 import com.kotlin.blog.common.util.ApiResponse
 import com.kotlin.blog.common.util.createResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.authentication.AnonymousAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.PostMapping
@@ -22,6 +24,11 @@ class AuthController(
     fun login(): ResponseEntity<ApiResponse<AuthenticationResponse>> {
         // 이미 필터를 통해 인증된 사용자의 정보를 SecurityContextHolder에서 가져오기
         val authentication = SecurityContextHolder.getContext().authentication
+
+        // 로그인 실패 시 SecurityContextHolder에 AnonymousAuthenticationToken 생성
+        if (authentication is AnonymousAuthenticationToken) {
+            throw LoginFailureException()
+        }
 
         val userDetails = authentication.principal as UserDetails
 

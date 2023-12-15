@@ -6,20 +6,39 @@ import java.time.LocalDateTime
 
 data class ApiResponse<T>(
     val httpStatusCode: Int,
-    val result: String = Result.SUCCESS.name,
-    val message: String = Result.SUCCESS.message,
+    val result: String,
+    val message: String,
     val data: T? = null,
     val timestamp: LocalDateTime = LocalDateTime.now(),
 )
 
 fun <T> createResponse(
     httpStatus: HttpStatus,
+    result: String = Result.SUCCESS.name,
     message: String = Result.SUCCESS.message,
     data: T? = null,
 ): ResponseEntity<ApiResponse<T>> {
     return ResponseEntity(
         ApiResponse(
             httpStatusCode = httpStatus.value(),
+            result = result,
+            message = message,
+            data = data,
+        ),
+        httpStatus,
+    )
+}
+
+fun <T> createErrorResponse(
+    httpStatus: HttpStatus,
+    result: String = Result.ERROR.name,
+    message: String = Result.ERROR.message,
+    data: T? = null,
+): ResponseEntity<ApiResponse<T>> {
+    return ResponseEntity(
+        ApiResponse(
+            httpStatusCode = httpStatus.value(),
+            result = result,
             message = message,
             data = data,
         ),

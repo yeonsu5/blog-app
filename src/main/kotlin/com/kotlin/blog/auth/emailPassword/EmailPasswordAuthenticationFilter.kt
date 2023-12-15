@@ -1,6 +1,6 @@
 package com.kotlin.blog.auth.emailPassword
 
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.kotlin.blog.auth.controller.dto.UserLoginRequest
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -16,28 +16,32 @@ class EmailPasswordAuthenticationFilter(
     private val emailPasswordAuthenticationProvider: AuthenticationProvider,
 ) : OncePerRequestFilter() {
 
-    val objectMapper = ObjectMapper()
+    val objectMapper = jacksonObjectMapper() // Kotlin용 Jackson 모듈에서 제공하는 확장함수(ObjectMapper + KotlinModule)
 
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
         filterChain: FilterChain,
     ) {
-        if (isLoginRequest(request)) {
-            val authenticationRequest = objectMapper.readValue(request.inputStream, UserLoginRequest::class.java)
-            val usernamePasswordAuthenticationToken =
-                UsernamePasswordAuthenticationToken(
-                    authenticationRequest.email,
-                    authenticationRequest.password,
-                )
-            // 토큰 사용
-            val authenticatedToken =
-                emailPasswordAuthenticationProvider.authenticate(usernamePasswordAuthenticationToken)
+        try {
+            if (isLoginRequest(request)) {
+                val authenticationRequest = objectMapper.readValue(request.inputStream, UserLoginRequest::class.java)
+                val usernamePasswordAuthenticationToken =
+                    UsernamePasswordAuthenticationToken(
+                        authenticationRequest.email,
+                        authenticationRequest.password,
+                    )
+                // 토큰 사용
+                val authenticatedToken =
+                    emailPasswordAuthenticationProvider.authenticate(usernamePasswordAuthenticationToken)
 
-            if (authenticatedToken.isAuthenticated) {
-                SecurityContextHolder.getContext().authentication =
-                    authenticatedToken
+                if (authenticatedToken.isAuthenticated) {
+                    SecurityContextHolder.getContext().authentication =
+                        authenticatedToken
+                }
             }
+        } catch (ex: Exception) {
+            request.setAttribute("exception", ex)
         }
         filterChain.doFilter(request, response)
     }

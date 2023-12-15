@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.DefaultSecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
@@ -18,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 class SecurityConfiguration(
     private val emailPasswordAuthenticationProvider: AuthenticationProvider,
     private val jwtAuthenticationProvider: JwtAuthenticationProvider,
+    private val entryPoint: AuthenticationEntryPoint,
 ) {
 
     @Bean
@@ -46,6 +48,7 @@ class SecurityConfiguration(
             .authenticationProvider(jwtAuthenticationProvider)
             .addFilterBefore(emailPasswordAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
+            .exceptionHandling { it.authenticationEntryPoint(entryPoint) }
 
         return http.build()
     }
