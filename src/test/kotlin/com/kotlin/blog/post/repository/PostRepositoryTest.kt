@@ -12,10 +12,11 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.domain.PageRequest
-import org.springframework.test.context.ActiveProfiles
+import java.time.LocalDateTime
 
+// @DataJpaTest
+// @ActiveProfiles("test")
 @SpringBootTest
-//@ActiveProfiles("test")
 class PostRepositoryTest @Autowired constructor(
     val postRepository: PostRepository,
     val userRepository: UserRepository,
@@ -82,11 +83,12 @@ class PostRepositoryTest @Autowired constructor(
         // given
         val user = userRepository.save(User("abc@gmail.com", "password", "nickname"))
         val post = Post("initial title", "initial content", user)
-        postRepository.save(post)
+        val savedPost = postRepository.save(post)
         val updatedTitle = "updated title"
         val updatedContent = "updated content"
+        val updatedAt = LocalDateTime.now()
 
-        val vo = PostUpdateVo(post.id, updatedTitle, updatedContent)
+        val vo = PostUpdateVo(savedPost.id, updatedTitle, updatedContent, updatedAt)
 
         // when
         postRepository.updatePost(vo.id, vo.title, vo.content, vo.updatedAt)
@@ -106,15 +108,6 @@ class PostRepositoryTest @Autowired constructor(
         val savedPost = postRepository.save(post)
         // when
         postRepository.deleteById(savedPost.id)
-        /*
-        !! 연산자를 사용하여 savedPost.id가 null일 경우 NullPointerException을 던지도록 강제하였다.
-         테스트 코드에서는 예상치 못한 상황이 발생했을 때 즉시 테스트를 실패시키는 게 좋으므로 테스트 코드에서 이렇게 작성하는건 괜찮지만
-         이런 방식의 null 처리는 실제 프로덕션 코드에서는 권장되지 않는다. 프로덕션 코드에서는 가능한 한 안전한 null-safe 방식을 사용해야 한다.
-         예를 들어
-         savedPost.id?.let { postRepository.deleteById(it) }
-         이러한 방식으로 작성하면 savedPost.id가 null인 경우 deleteById 메소드가 호출되지 않는다.
-        */
-
         // then
         assertThat(postRepository.findById(savedPost.id)).isEmpty()
         assertThat(postRepository.findAll()).isEmpty()
