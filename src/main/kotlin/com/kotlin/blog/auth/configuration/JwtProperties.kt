@@ -6,5 +6,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 data class JwtProperties(
     val key: String,
     val accessTokenExpiration: Long,
+    val refreshTokenExpiration: Long,
 )
 // application.yml에서 "jwt" 접두사로 시작하는 프로퍼티들을 가져오기

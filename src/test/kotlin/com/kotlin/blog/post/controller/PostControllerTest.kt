@@ -240,7 +240,6 @@ class PostControllerTest {
     private fun createJwtToken(email: String): String {
         val userDetails = userDetailsService.loadUserByUsername(email)
 
-        val jwtToken = jwtTokenUtil.generate(userDetails, Date(System.currentTimeMillis() + (1000 * 60))) // 1분
-        return jwtToken
+        return jwtTokenUtil.generate(userDetails, Date(System.currentTimeMillis() + (1000 * 60)))
     }
 }

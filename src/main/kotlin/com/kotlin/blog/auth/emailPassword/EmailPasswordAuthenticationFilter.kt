@@ -1,11 +1,11 @@
 package com.kotlin.blog.auth.emailPassword
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.kotlin.blog.auth.controller.dto.UserLoginRequest
+import com.kotlin.blog.auth.controller.dto.request.UserLoginRequest
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import org.springframework.security.authentication.AuthenticationProvider
+import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
@@ -13,7 +13,8 @@ import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
 class EmailPasswordAuthenticationFilter(
-    private val emailPasswordAuthenticationProvider: AuthenticationProvider,
+//    private val emailPasswordAuthenticationProvider: AuthenticationProvider,
+    private val authenticationManager: AuthenticationManager,
 ) : OncePerRequestFilter() {
 
     val objectMapper = jacksonObjectMapper() // Kotlin용 Jackson 모듈에서 제공하는 확장함수(ObjectMapper + KotlinModule)
@@ -33,7 +34,7 @@ class EmailPasswordAuthenticationFilter(
                     )
                 // 토큰 사용
                 val authenticatedToken =
-                    emailPasswordAuthenticationProvider.authenticate(usernamePasswordAuthenticationToken)
+                    authenticationManager.authenticate(usernamePasswordAuthenticationToken)
 
                 if (authenticatedToken.isAuthenticated) {
                     SecurityContextHolder.getContext().authentication =

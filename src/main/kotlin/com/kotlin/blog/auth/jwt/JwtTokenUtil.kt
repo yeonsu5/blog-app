@@ -27,6 +27,9 @@ class JwtTokenUtil(
         val role = userDetails.authorities.first().authority
 
         return Jwts.builder()
+            .header()
+            .add("typ", "JWT")
+            .and()
             .claims()
             .subject(userDetails.username)
             .issuedAt(Date(System.currentTimeMillis()))

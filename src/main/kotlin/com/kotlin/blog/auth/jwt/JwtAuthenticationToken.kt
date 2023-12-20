@@ -6,8 +6,8 @@ import org.springframework.security.core.GrantedAuthority
 class JwtAuthenticationToken(
     private val token: String,
     private val subject: String,
-    private val role: MutableCollection<out GrantedAuthority>?,
-) : AbstractAuthenticationToken(null) {
+    role: MutableCollection<out GrantedAuthority>?,
+) : AbstractAuthenticationToken(role) {
     override fun getCredentials(): Any {
         return token
     }

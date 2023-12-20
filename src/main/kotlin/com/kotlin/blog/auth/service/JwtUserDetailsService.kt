@@ -15,11 +15,10 @@ typealias ApplicationUser = com.kotlin.blog.user.domain.entity.User
 class JwtUserDetailsService(
     private val userRepository: UserRepository,
 ) : UserDetailsService {
-
     override fun loadUserByUsername(username: String): UserDetails =
         userRepository.findByIdOrNull(username.toLong())
             ?.mapToUserDetails()
-            ?: throw UsernameNotFoundException("해당 email의 사용자를 찾을 수 없습니다")
+            ?: throw UsernameNotFoundException("해당 번호의 사용자를 찾을 수 없습니다")
 
     private fun ApplicationUser.mapToUserDetails(): UserDetails =
         User.builder()

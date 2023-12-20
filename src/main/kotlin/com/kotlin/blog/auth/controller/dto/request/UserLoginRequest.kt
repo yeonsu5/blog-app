@@ -1,4 +1,4 @@
-package com.kotlin.blog.auth.controller.dto
+package com.kotlin.blog.auth.controller.dto.request
 
 import jakarta.validation.constraints.NotBlank
 
