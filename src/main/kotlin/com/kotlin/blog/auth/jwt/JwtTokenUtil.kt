@@ -46,6 +46,10 @@ class JwtTokenUtil(
         return userDetails.username == userId && !isExpired(token)
     }
 
+    fun isRefreshTokenValid(receivedToken: String, storedToken: String): Boolean {
+        return receivedToken == storedToken && !isExpired(receivedToken)
+    }
+
     fun extractUserId(token: String): String? =
         getAllClaims(token)
             .subject

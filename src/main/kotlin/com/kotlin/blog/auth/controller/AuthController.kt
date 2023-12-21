@@ -1,6 +1,5 @@
 package com.kotlin.blog.auth.controller
 
-import com.kotlin.blog.auth.controller.dto.request.CreateAccessTokenRequest
 import com.kotlin.blog.auth.controller.dto.response.AuthenticationResponse
 import com.kotlin.blog.auth.controller.dto.response.CreateAccessTokenResponse
 import com.kotlin.blog.auth.service.TokenService
@@ -13,10 +12,9 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.security.Principal
 
 @RestController
 @RequestMapping("/api/auth")
@@ -40,12 +38,12 @@ class AuthController(
         return createResponse(HttpStatus.OK, data = authenticationResponse)
     }
 
-//    @PostMapping("/refresh")
-//    fun createNewAccessToken(
-//        @RequestBody request: CreateAccessTokenRequest,
-//    ): ResponseEntity<ApiResponse<CreateAccessTokenResponse>> {
-//        val newAccessToken = tokenService.createNewAccessToken(request.refreshToken)
-//
-//        return createResponse(HttpStatus.CREATED, data = newAccessToken)
-//    }
+    @PostMapping("/refresh")
+    fun createNewAccessToken(
+        @RequestHeader("Authorization") refreshToken: String, // 클라이언트는 헤더에 refreshToken을 보냄
+    ): ResponseEntity<ApiResponse<CreateAccessTokenResponse>> {
+        val newAccessToken = tokenService.createNewAccessToken(refreshToken)
+
+        return createResponse(HttpStatus.CREATED, data = newAccessToken)
+    }
 }

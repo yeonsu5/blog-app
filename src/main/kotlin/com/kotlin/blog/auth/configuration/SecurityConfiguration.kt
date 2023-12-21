@@ -34,7 +34,7 @@ class SecurityConfiguration(
             .authorizeHttpRequests {
                 it.requestMatchers("/api/users/register", "/error")
                     .permitAll()
-                    .requestMatchers(HttpMethod.POST, "/api/auth/login")
+                    .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/refresh")
                     .permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/posts/**") // 글 조회(전체, 상세, 검색)는 모두에게 허용
                     .permitAll()

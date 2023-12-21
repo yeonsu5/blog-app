@@ -29,7 +29,7 @@ class JwtAuthenticationFilter(
         try {
             if (authHeader.containsBearerToken()) { // authHeader가 Bearer 로 시작하는 경우
                 val jwtToken = authHeader.extractTokenValue()
-                val userId = jwtTokenUtil.extractUserId(jwtToken) ?: "" // 토큰에서 이메일 값 추출
+                val userId = jwtTokenUtil.extractUserId(jwtToken) ?: "" // 토큰에서  userId 값 추출
                 val authority = jwtTokenUtil.extractAuthority(jwtToken)
 
                 val jwtAuthenticationToken = JwtAuthenticationToken(
