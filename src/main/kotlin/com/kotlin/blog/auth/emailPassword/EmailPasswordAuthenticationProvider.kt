@@ -1,16 +1,16 @@
 package com.kotlin.blog.auth.emailPassword
 
-import com.kotlin.blog.auth.service.EmailPasswordUserDetailsService
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 
 // DaoAuthenticationProvider를 래핑하여 사용하기 위한 클래스
 @Component
 class EmailPasswordAuthenticationProvider(
-    userDetailsService: EmailPasswordUserDetailsService,
+    userDetailsService: UserDetailsService,
     passwordEncoder: PasswordEncoder,
 ) : AuthenticationProvider {
 

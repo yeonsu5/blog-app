@@ -7,6 +7,7 @@ import com.kotlin.blog.auth.jwt.JwtTokenUtil
 import com.kotlin.blog.auth.repository.RefreshTokenRepository
 import com.kotlin.blog.common.exception.InvalidTokenException
 import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.*
@@ -16,7 +17,7 @@ class TokenService(
     private val jwtTokenUtil: JwtTokenUtil,
     private val jwtProperties: JwtProperties,
     private val refreshTokenRepository: RefreshTokenRepository,
-    private val userDetailsService: JwtUserDetailsService,
+    private val userDetailsService: UserDetailsService,
 ) {
     @Transactional
     fun createToken(userDetails: UserDetails): AuthenticationResponse {

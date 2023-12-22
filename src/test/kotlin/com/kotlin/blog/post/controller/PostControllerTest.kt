@@ -2,7 +2,6 @@ package com.kotlin.blog.post.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.kotlin.blog.auth.jwt.JwtTokenUtil
-import com.kotlin.blog.auth.service.EmailPasswordUserDetailsService
 import com.kotlin.blog.post.domain.entity.Post
 import com.kotlin.blog.post.dto.request.PostSaveRequest
 import com.kotlin.blog.post.dto.request.PostUpdateRequest
@@ -17,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.* // ktlint-disable no-wildcard-imports
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.* // ktlint-disable no-wildcard-imports
@@ -39,7 +39,7 @@ class PostControllerTest {
     private lateinit var objectMapper: ObjectMapper
 
     @Autowired
-    private lateinit var userDetailsService: EmailPasswordUserDetailsService
+    private lateinit var userDetailsService: UserDetailsService
 
     @Autowired
     private lateinit var jwtTokenUtil: JwtTokenUtil

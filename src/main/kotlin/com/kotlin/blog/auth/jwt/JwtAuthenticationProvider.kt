@@ -1,15 +1,15 @@
 package com.kotlin.blog.auth.jwt
 
-import com.kotlin.blog.auth.service.JwtUserDetailsService
 import com.kotlin.blog.common.exception.InvalidTokenException
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Component
 
 @Component
 class JwtAuthenticationProvider(
     private val jwtTokenUtil: JwtTokenUtil,
-    private val userDetailsService: JwtUserDetailsService,
+    private val userDetailsService: UserDetailsService,
 ) : AuthenticationProvider {
     override fun authenticate(authentication: Authentication): Authentication {
         val token = authentication.credentials as String
