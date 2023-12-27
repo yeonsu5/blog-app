@@ -46,13 +46,13 @@ class CustomExceptionHandler {
         return createErrorResponse(HttpStatus.BAD_REQUEST, data = error)
     }
 
-//    @ExceptionHandler(Exception::class)
-//    protected fun defaultException(ex: Exception):
-//        ResponseEntity<ApiResponse<Map<String, String>>> {
-//        val error = mapOf("미처리 예외" to (ex.message ?: "Not Exception Message"))
-//
-//        return createErrorResponse(HttpStatus.BAD_REQUEST, data = error)
-//    }
+    @ExceptionHandler(Exception::class)
+    protected fun defaultException(ex: Exception):
+        ResponseEntity<ApiResponse<Map<String, String>>> {
+        val error = mapOf("미처리 예외" to (ex.message ?: "Not Exception Message"))
+
+        return createErrorResponse(HttpStatus.BAD_REQUEST, data = error)
+    }
 
     // JWT 토큰이 만료된 경우
     @ExceptionHandler(ExpiredJwtException::class)

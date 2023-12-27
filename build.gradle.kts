@@ -47,6 +47,8 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     // validation
     implementation("org.springframework.boot:spring-boot-starter-validation:3.1.5")
+    // oauth2
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
 }
 
 tasks.withType<KotlinCompile> {

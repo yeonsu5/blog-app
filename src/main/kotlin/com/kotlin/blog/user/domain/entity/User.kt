@@ -20,9 +20,8 @@ class User(
     @Column(unique = true)
     val email: String,
 
-    val password: String,
+    val password: String?,
 
-    @Column(unique = true)
     var nickname: String,
 
     val createdAt: LocalDateTime = LocalDateTime.now(),

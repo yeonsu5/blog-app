@@ -35,7 +35,7 @@ class CustomUserDetailsService(
     private fun ApplicationUser.mapToUserDetails(userId: Long): UserDetails =
         User.builder()
             .username(userId.toString())
-            .password(this.password)
+            .password(this.password ?: "")
             .roles(this.role.name)
             .build()
 }

@@ -11,10 +11,12 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.authentication.AnonymousAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.servlet.view.RedirectView
 
 @RestController
 @RequestMapping("/api/auth")
@@ -33,7 +35,7 @@ class AuthController(
         }
         val userDetails = authentication.principal as UserDetails
 
-        val authenticationResponse = tokenService.createToken(userDetails)
+        val authenticationResponse = tokenService.createAccessTokenAndRefreshToken(userDetails)
 
         return createResponse(HttpStatus.OK, data = authenticationResponse)
     }
@@ -45,5 +47,11 @@ class AuthController(
         val newAccessToken = tokenService.createNewAccessToken(refreshToken)
 
         return createResponse(HttpStatus.CREATED, data = newAccessToken)
+    }
+
+    @GetMapping("/google")
+    fun redirectToGoogleLogin(): RedirectView {
+        return RedirectView("/oauth2/authorization/google")
+        // 이 경로로 요청을 보내면 OAuth2AuthorizationRequestRedirectFilter가 사용자를 Google 인증 페이지로 리다이렉트한다.
     }
 }

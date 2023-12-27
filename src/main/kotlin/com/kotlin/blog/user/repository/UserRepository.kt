@@ -24,7 +24,7 @@ interface UserRepository : JpaRepository<User, Long> {
     @Query("INSERT INTO User(email, password, createdAt, nickname, role) SELECT :email, :password, :createdAt, :nickname, :role")
     fun register(
         @Param("email") email: String,
-        @Param("password") password: String,
+        @Param("password") password: String?,
         @Param("createdAt") createdAt: LocalDateTime,
         @Param("nickname") nickname: String,
         @Param("role") role: Role,

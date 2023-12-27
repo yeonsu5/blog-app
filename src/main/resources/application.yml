@@ -4,8 +4,8 @@ spring:
 
   datasource:
     url: jdbc:mysql://localhost:3306/blog?useUnicode=true&characterEncoding=utf-8
-    username: ${username_}
-    password: ${password}
+    username: ${USER_NAME}
+    password: ${PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -16,6 +16,17 @@ spring:
       hibernate:
         format_sql: true
         highlight_sql: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_ID}
+            client-secret: ${GOOGLE_SECRET}
+            scope:
+              - profile
+              - email
 
 jwt:
   key: ${JWT_KEY}

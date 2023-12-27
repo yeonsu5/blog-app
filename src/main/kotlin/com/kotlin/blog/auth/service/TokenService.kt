@@ -20,7 +20,7 @@ class TokenService(
     private val userDetailsService: UserDetailsService,
 ) {
     @Transactional
-    fun createToken(userDetails: UserDetails): AuthenticationResponse {
+    fun createAccessTokenAndRefreshToken(userDetails: UserDetails): AuthenticationResponse {
         val accessToken = createToken(userDetails, getAccessTokenExpiration())
         val refreshToken = createToken(userDetails, getRefreshTokenExpiration())
 

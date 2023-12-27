@@ -2,6 +2,7 @@ package com.kotlin.blog.user.service
 
 // import com.kotlin.blog.common.authority.JwtTokenUtil
 import com.kotlin.blog.common.exception.InvalidInputException
+import com.kotlin.blog.user.domain.entity.User
 import com.kotlin.blog.user.domain.vo.UserRegisterVo
 import com.kotlin.blog.user.repository.UserRepository
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -27,6 +28,10 @@ class UserServiceImpl(
             userRegisterVo.nickname,
             userRegisterVo.role,
         )
+    }
+
+    override fun findByEmail(email: String): User? {
+        return userRepository.findByEmail(email)
     }
 
     fun validateDuplicateEmail(email: String) {
