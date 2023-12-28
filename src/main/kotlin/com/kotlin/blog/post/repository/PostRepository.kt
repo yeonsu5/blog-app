@@ -16,15 +16,15 @@ import java.time.LocalDateTime
 
 @Repository
 interface PostRepository : JpaRepository<Post, Long> {
-    @Query("SELECT NEW com.kotlin.blog.post.domain.vo.PostListViewVo(p.id, p.title, p.author.nickname, p.createdAt, p.updatedAt) FROM Post p")
+    @Query("SELECT NEW com.kotlin.blog.post.domain.vo.PostListViewVo(p.id, p.title, p.user.nickname, p.createdAt, p.updatedAt) FROM Post p")
     fun findAllPosts(pageable: Pageable): Page<PostListViewVo>
 
-    @Query("SELECT NEW com.kotlin.blog.post.domain.vo.PostViewVo(p.id, p.title, p.content, p.author.nickname, p.createdAt, p.updatedAt) FROM Post p WHERE p.id = :id")
+    @Query("SELECT NEW com.kotlin.blog.post.domain.vo.PostViewVo(p.id, p.title, p.content, p.user.nickname, p.createdAt, p.updatedAt) FROM Post p WHERE p.id = :id")
     fun findPostById(@Param("id") id: Long): PostViewVo
 
     @Modifying
     @Transactional
-    @Query("INSERT INTO Post(title, content, createdAt, author) SELECT :title, :content, :createdAt, u FROM User u WHERE u.id = :userId")
+    @Query("INSERT INTO Post(title, content, createdAt, user) SELECT :title, :content, :createdAt, u FROM User u WHERE u.id = :userId")
     fun savePost(
         @Param("title") title: String,
         @Param("content") content: String,
@@ -43,7 +43,7 @@ interface PostRepository : JpaRepository<Post, Long> {
     )
 
     @Query(
-        "SELECT NEW com.kotlin.blog.post.domain.vo.PostSearchViewVo(p.id, p.title, p.author.nickname, p.createdAt, p.updatedAt) From Post p " +
+        "SELECT NEW com.kotlin.blog.post.domain.vo.PostSearchViewVo(p.id, p.title, p.user.nickname, p.createdAt, p.updatedAt) From Post p " +
             "WHERE LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%')) OR LOWER(p.content) LIKE LOWER(CONCAT('%', :keyword, '%'))",
     )
     fun searchPosts(@Param("keyword") keyword: String, pageable: Pageable): Page<PostSearchViewVo>

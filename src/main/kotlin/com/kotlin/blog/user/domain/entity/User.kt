@@ -34,6 +34,9 @@ class User(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
 ) {
-    @OneToMany(mappedBy = "author", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
     var posts: MutableList<Post> = mutableListOf()
+
+    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
+    var socialLogins: MutableList<SocialLogin> = mutableListOf()
 }

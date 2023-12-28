@@ -6,7 +6,7 @@ import java.time.LocalDateTime
 data class PostResponse(
     val title: String,
     val content: String,
-    val authorName: String,
+    val userNickname: String,
     val createdAt: LocalDateTime,
     val updatedAt: LocalDateTime? = null,
     val id: Long,
@@ -16,7 +16,7 @@ data class PostResponse(
             return PostResponse(
                 title = postViewVo.title,
                 content = postViewVo.content,
-                authorName = postViewVo.authorName,
+                userNickname = postViewVo.userNickname,
                 createdAt = postViewVo.createdAt,
                 updatedAt = postViewVo.updatedAt,
                 id = postViewVo.id,
