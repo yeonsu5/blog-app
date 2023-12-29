@@ -2,7 +2,6 @@ package com.kotlin.blog.user.repository
 
 import com.kotlin.blog.user.domain.entity.Role
 import com.kotlin.blog.user.domain.entity.User
-import com.kotlin.blog.user.domain.vo.UserRegisterVo
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query

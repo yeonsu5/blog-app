@@ -1,5 +1,5 @@
 package com.kotlin.blog.user.domain.entity
 
-enum class SocialLoginProvider{
-    GOOGLE
+enum class SocialLoginProvider {
+    GOOGLE,
 }

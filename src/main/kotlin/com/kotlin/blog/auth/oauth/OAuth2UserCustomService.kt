@@ -65,7 +65,4 @@ class OAuth2UserCustomService(
             userRegisterVo.role,
         )
     }
-
-    private fun saveSocialLoginInfo
-
 }
