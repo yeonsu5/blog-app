@@ -6,7 +6,9 @@ import com.kotlin.blog.post.domain.entity.Post
 import com.kotlin.blog.post.dto.request.PostSaveRequest
 import com.kotlin.blog.post.dto.request.PostUpdateRequest
 import com.kotlin.blog.post.repository.PostRepository
+import com.kotlin.blog.user.domain.entity.Role
 import com.kotlin.blog.user.domain.entity.User
+import com.kotlin.blog.user.repository.RoleRepository
 import com.kotlin.blog.user.repository.UserRepository
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterEach
@@ -31,6 +33,9 @@ class PostControllerTest {
 
     @Autowired
     private lateinit var userRepository: UserRepository
+
+    @Autowired
+    private lateinit var roleRepository: RoleRepository
 
     @Autowired
     private lateinit var postRepository: PostRepository
@@ -91,7 +96,7 @@ class PostControllerTest {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.data.title").value("title"))
             .andExpect(jsonPath("$.data.content").value("content"))
-            .andExpect(jsonPath("$.data.authorName").value("nickname"))
+            .andExpect(jsonPath("$.data.userNickname").value("nickname"))
     }
 
     @Test
@@ -99,6 +104,7 @@ class PostControllerTest {
     fun createPostTest() {
         // given
         val user = userRepository.save(User("user@email.com", "password", "nickname"))
+        roleRepository.save(Role("USER", user))
         val request = PostSaveRequest("new title", "new content", user.id)
 
         val requestBody = objectMapper.writeValueAsString(request)
@@ -145,6 +151,7 @@ class PostControllerTest {
     fun deletePostTest() {
         // given
         val user = userRepository.save(User("user@email.com", "password", "nickname"))
+        roleRepository.save(Role("USER", user))
         val post = postRepository.save(Post("title", "content", user))
 
         val jwtToken = createJwtToken(user.email)
@@ -166,6 +173,7 @@ class PostControllerTest {
     fun deletePostNonExistingIdTest() {
         // given
         val user = userRepository.save(User("user@email.com", "password", "nickname"))
+        roleRepository.save(Role("USER", user))
         val post = postRepository.save(Post("title", "content", user))
 
         val jwtToken = createJwtToken(user.email)
@@ -183,6 +191,7 @@ class PostControllerTest {
     fun updatePostTest() {
         // given
         val user = userRepository.save(User("user@email.com", "password", "nickname"))
+        roleRepository.save(Role("USER", user))
         val post = postRepository.save(Post("title", "content", user))
 
         val request = PostUpdateRequest("update title", "update content")

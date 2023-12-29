@@ -1,5 +1,6 @@
 package com.kotlin.blog.auth.service
 
+import com.kotlin.blog.user.repository.RoleRepository
 import com.kotlin.blog.user.repository.UserRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.userdetails.User
@@ -14,6 +15,7 @@ typealias ApplicationUser = com.kotlin.blog.user.domain.entity.User
 @Service
 class CustomUserDetailsService(
     private val userRepository: UserRepository,
+    private val roleRepository: RoleRepository,
 ) : UserDetailsService {
     override fun loadUserByUsername(username: String): UserDetails {
         // username이 이메일 형식인지(로그인), 아니면 숫자 형식인지(인가) 확인
@@ -32,10 +34,15 @@ class CustomUserDetailsService(
         } ?: throw UsernameNotFoundException("사용자를 찾을 수 없습니다.")
     }
 
-    private fun ApplicationUser.mapToUserDetails(userId: Long): UserDetails =
-        User.builder()
+    private fun ApplicationUser.mapToUserDetails(userId: Long): UserDetails {
+        val userRoles = roleRepository.findByUserId(userId)
+            .map { it.name } // Role 엔티티에서 이름만 추출
+            .toTypedArray() // Array로 변환
+
+        return User.builder()
             .username(userId.toString())
-            .password(this.password ?: "")
-            .roles(this.role.name)
+            .password(this.password ?: "") // social login 회원가입인 경우 비밀번호가 빈값
+            .roles(*userRoles) // 스프레드 연산자(*)를 사용하여 모든 역할 추가
             .build()
+    }
 }

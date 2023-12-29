@@ -24,7 +24,7 @@ class JwtTokenUtil(
         userDetails: UserDetails,
         expirationDate: Date,
     ): String {
-        val role = userDetails.authorities.first().authority
+        val roles = userDetails.authorities.joinToString(",") { it.authority }
 
         return Jwts.builder()
             .header()
@@ -34,7 +34,7 @@ class JwtTokenUtil(
             .subject(userDetails.username)
             .issuedAt(Date(System.currentTimeMillis()))
             .expiration(expirationDate)
-            .add("role", role)
+            .add(mapOf("role" to roles))
             .and()
             .signWith(secretKey)
             .compact()

@@ -5,7 +5,6 @@ import com.kotlin.blog.auth.jwt.JwtAuthenticationFilter
 import com.kotlin.blog.auth.jwt.JwtAuthenticationProvider
 import com.kotlin.blog.auth.oauth.OAuth2SuccessHandler
 import com.kotlin.blog.auth.oauth.OAuth2UserCustomService
-// import com.kotlin.blog.auth.oauth.Oauth2UserCustomService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -37,14 +36,16 @@ class SecurityConfiguration(
             .httpBasic { it.disable() }
             .csrf { it.disable() }
             .authorizeHttpRequests {
-                it.requestMatchers("/api/users/register", "/error", "/api/auth/google", "/")
+                it.requestMatchers("/api/users/register", "/error", "/api/auth/google")
                     .permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/refresh")
                     .permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/posts/**") // 글 조회(전체, 상세, 검색)는 모두에게 허용
                     .permitAll()
+                    .requestMatchers("/api/admin/**")
+                    .hasAuthority("ROLE_ADMIN")
                     .anyRequest()
-                    .fullyAuthenticated()
+                    .authenticated()
             }
             .sessionManagement {
                 it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
