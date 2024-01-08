@@ -23,7 +23,7 @@ class CustomUserDetailsService(
             // 이메일로 사용자 찾기
             userRepository.findByEmail(username)
         } else {
-            // ID로 사용자 찾기
+            // ID로 사용자 찾기(jwt토큰-인가)
             userRepository.findByIdOrNull(username.toLong())
         }
 

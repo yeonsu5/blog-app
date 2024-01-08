@@ -1,5 +1,7 @@
 package com.kotlin.blog.auth.configuration
 
+import com.kotlin.blog.auth.Test2AuthorizationManager
+import com.kotlin.blog.auth.TestAuthorizationManager
 import com.kotlin.blog.auth.emailPassword.EmailPasswordAuthenticationFilter
 import com.kotlin.blog.auth.jwt.JwtAuthenticationFilter
 import com.kotlin.blog.auth.jwt.JwtAuthenticationProvider
@@ -31,15 +33,20 @@ class SecurityConfiguration(
         http: HttpSecurity,
         jwtAuthenticationFilter: JwtAuthenticationFilter,
         emailPasswordAuthenticationFilter: EmailPasswordAuthenticationFilter,
+        testAuthorizationManager: TestAuthorizationManager,
+        test2AuthorizationManager: Test2AuthorizationManager,
     ): DefaultSecurityFilterChain {
         http
             .httpBasic { it.disable() }
             .csrf { it.disable() }
             .authorizeHttpRequests {
-                it.requestMatchers("/api/users/register", "/error", "/api/auth/google")
+                it
+                    .requestMatchers("/api/users/register", "/error", "/api/auth/google")
                     .permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/auth/login", "/api/auth/refresh")
                     .permitAll()
+//                    .requestMatchers("/api/**").access(testAuthorizationManager)
+//                    .anyRequest().access(test2AuthorizationManager)
                     .requestMatchers(HttpMethod.GET, "/api/posts/**") // 글 조회(전체, 상세, 검색)는 모두에게 허용
                     .permitAll()
                     .requestMatchers("/api/admin/**")
